@@ -1,6 +1,6 @@
 # Configuration and stored contracts
 
-BritePulse reads a JSON configuration file through `loadConfig`, exported from `britepulse/config`. No application code or authentication hook is executed while loading settings. The CLI will expose setup and validation commands in a later iteration.
+BritePulse reads a JSON configuration file through `loadConfig`, exported from `britepulse/config`. No application code or authentication hook is executed while loading settings. Use `britepulse init --url <URL>` to create settings without overwriting a file, `britepulse doctor` to validate the resolved profile, and `britepulse history` to list local runs. Run `britepulse` in a terminal for guided setup. Direct commands emit JSON and never prompt for missing inputs.
 
 ```json
 {

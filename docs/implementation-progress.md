@@ -65,3 +65,18 @@ Review findings and cleanup:
 - Added forced process-group cleanup after interruption, including when the immediate child exits before its descendants.
 
 Validation: 35 tests pass, including concurrent same-label runs, artifact races and duplicate writes, malformed history, timestamp sorting, terminal state persistence, temporary cleanup, comparison identity, literal shell metacharacters, timeouts, cancellation, spawn errors and output callback failures.
+
+## Iteration 5 Project setup and command shell
+
+Implemented Clack guided setup, automatic Vite/Next.js detection with explicit ambiguous-case handling, noninteractive init, doctor and history commands, per-setting overrides, command-specific parsing and JSON output.
+
+Review findings and cleanup:
+
+- Shared initialization and inspection logic between the terminal menu and direct commands.
+- Kept human presentation in Clack and made direct commands emit structured JSON; redirected input cannot accidentally enter prompts.
+- Used exclusive configuration creation and tested concurrent initialization to preserve existing settings.
+- Kept doctor read-only: it checks installed metadata, paths and optional authentication hook existence without executing application code, builds or browser launches.
+- Reported unvalidated tool versions as compatibility warnings rather than claiming support.
+- Kept comparison/baseline selection pending until the comparison feature has real stored data to use.
+
+Validation: 41 tests pass. End-to-end CLI tests exercise setup, overrides, missing required inputs, unknown options and empty history. A manual CLI smoke check against the actual Vite fixture detects Vite 8.3.5, preserves an overridden run count and lists empty local history without creating a run.
