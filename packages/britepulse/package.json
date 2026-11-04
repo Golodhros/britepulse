@@ -1,0 +1,21 @@
+{
+  "name": "britepulse",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "britepulse": "./src/cli.mjs"
+  },
+  "scripts": {
+    "build": "node --check src/cli.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test",
+    "dev": "node src/cli.mjs"
+  },
+  "dependencies": {
+    "@clack/prompts": "1.8.1"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
+  }
+}

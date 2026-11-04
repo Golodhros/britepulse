@@ -1,21 +1,49 @@
 # BritePulse
 
-A pulse on your frontend performance.
+An open source local workflow for frontend performance checks, bundle analysis, and release comparisons for Vite and Next.js applications.
 
-BritePulse is an open source project for tracking frontend application performance, starting with Next.js and expanding to React Router and TanStack applications.
+## Development
 
-## Planned features
+Use Node.js 22.12 or newer and pnpm 12.6.0.
 
-- **Synthetic tests:** Run Lighthouse-based performance checks.
-- **Bundle analysis:** Inspect bundle size and composition.
-- **Performance dashboards:** Visualize results and trends with [Britecharts](https://github.com/britecharts/britecharts).
+```sh
+pnpm install
+pnpm dev
+```
 
-BritePulse will bring existing tools together into a cohesive performance workflow.
+Open the local URL printed by Vite. The dashboard uses React, TypeScript, Tailwind CSS, Shadcn UI components, and Britecharts. Its page and measurement filters work with clearly labeled illustrative data.
 
-## Status
+```sh
+pnpm build
+pnpm typecheck
+pnpm test
+pnpm --filter britepulse dev --help
+pnpm --filter britepulse dev
+pnpm --filter @britepulse/report preview
+```
 
-Early planning. The test runner, analyzer, and dashboards are not implemented yet.
+The last command previews the production report after building it. Vite uses relative asset URLs so the prebuilt dashboard can be packaged for local serving. Report export and a CLI report server are future work.
+
+## Workspace
+
+- `packages/britepulse`: Clack CLI shell and initial shared result types. Interactive prompts require a terminal; redirected input fails promptly with exit code 2.
+- `packages/report`: Vite dashboard application. `components.json` configures the Shadcn registry and `@/` aliases. UI components live in `src/components/ui`.
+
+Add Shadcn components from the report directory:
+
+```sh
+cd packages/report
+pnpm dlx shadcn@latest add button
+```
+
+The current scaffold adapts the Shadcn Card component. See [Shadcn Vite setup](https://ui.shadcn.com/docs/installation/vite) and [Britecharts React](https://britecharts.github.io/britecharts/docs/packages/react-readme).
+
+## Status and next work
+
+The scaffold includes a sample dashboard and an interactive CLI entry point. It does not collect Lighthouse measurements, analyze bundles, persist history, enforce budgets, or export reports yet. Sample values are not performance findings.
+
+Next: validate runner and bundler integrations, finalize versioned result contracts, implement immutable local storage under `.britepulse/`, and connect collection and comparisons to the dashboard. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). Shadcn UI components are adapted under the [MIT license](https://github.com/shadcn-ui/ui/blob/main/LICENSE.md); Britecharts is Apache-2.0.

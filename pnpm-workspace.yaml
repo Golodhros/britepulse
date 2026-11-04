@@ -1,0 +1,6 @@
+packages:
+  - packages/*
+minimumReleaseAgeExclude:
+  - '@britecharts/core@3.0.0'
+  - '@britecharts/react@3.0.0'
+  - '@britecharts/wrappers@3.0.0'
