@@ -11,3 +11,5 @@ coverage/
 
 .britepulse/
 *.tsbuildinfo
+
+.artifacts/

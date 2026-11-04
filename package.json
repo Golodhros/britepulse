@@ -9,6 +9,9 @@
     "dev": "pnpm --filter @britepulse/report dev",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm --filter britepulse test"
+    "test": "pnpm --filter britepulse test",
+    "test:compatibility": "node scripts/compatibility.mjs",
+    "test:native": "node scripts/probe-next-native.mjs",
+    "test:synthetic": "node fixtures/synthetic/probe.mjs"
   }
 }

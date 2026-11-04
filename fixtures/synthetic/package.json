@@ -1,0 +1,10 @@
+{
+  "name": "@britepulse/fixture-synthetic",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@lhci/cli": "0.16.0",
+    "lighthouse": "13.6.0",
+    "proxy-agent": "8.0.1"
+  }
+}
