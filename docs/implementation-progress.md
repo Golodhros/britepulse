@@ -35,3 +35,17 @@ Review findings and cleanup:
 - Kept the Vite subpath deferred until an actual adapter exists, rather than publishing a placeholder export.
 
 Validation: strict TypeScript checks, lint, seven tests and production dashboard/core builds pass. A tarball was installed into a clean consumer; installed executable version/help and packaged report checks passed, including with UI imports blocked. Network-restricted shell installs use a separate approved install step with the same package verifier. CI runs the full package smoke test in one command.
+
+## Iteration 3 Configuration and result contracts
+
+Implemented a versioned JSON configuration loader, precedence and path resolution, stable configuration fingerprints, runtime schemas and inferred types for manifests, samples, aggregates, bundles, comparisons and budgets.
+
+Review findings and cleanup:
+
+- Removed schema defaults from the override layer after tests exposed sibling settings being reset. Defaults now apply only to project/resolved settings.
+- Kept checkout and storage paths out of the measurement fingerprint; canonical object ordering makes equivalent settings stable.
+- Kept unknown values nullable, required diagnostic reasons for incomplete data, and rejected duplicate/overlapping entrypoint assets.
+- Added timestamp lifecycle checks and traversal-free artifact references at the contract boundary.
+- Kept measurement computation and filesystem operations outside the schema module.
+
+Validation: tests cover precedence, invalid values and schema versions, file/path resolution, fingerprint stability, nullable snapshot round trips, sample counts, nonfinite and negative values, entrypoint accounting, failed samples, lifecycle timestamps, comparison null/zero cases and unknown-budget outcomes.
