@@ -95,3 +95,19 @@ Review findings and cleanup:
 - Preserved partial snapshot status when finalizing a local run.
 
 Validation: 46 tests pass, including actual production builds with multiple HTML entrypoints, static/shared/lazy JS, initial and lazy CSS, compression, custom output directories, SSR separation, disabled manifests and filename collisions. Each emitted size is checked against the corresponding file on disk; candidate changes are imported into distinct local history entries.
+
+## Iteration 7 Consumer integration package
+
+Added private `@britepulse/integration`, following Britecharts' consumer-package pattern. Fresh CLI-only and Vite React consumers install the production tarball and test installed binaries, public runtime/type exports, report assets and real client/SSR workflows. The root `test:integration` command owns the complete pipeline; `test:package` delegates to its packaging subset.
+
+Review findings and cleanup:
+
+- Staged consumers into ignored artifacts with independent pnpm workspaces. Tests assert installed package paths stay inside the consumer, so workspace links cannot hide packaging errors.
+- Recreated installations on every full run to prevent stale tarballs with unchanged version numbers from passing.
+- Exercised public CLI output and files on disk without importing workspace implementation modules or using implementation parsers to validate their own output.
+- Tested same-label baseline/candidate imports, exact byte sizes, lazy CSS, compression estimates, expected dependency growth, invalid schema rejection and explicit SSR target selection.
+- Consolidated the old standalone package smoke test into the integration package while preserving its root command alias.
+- Added the dependency-free integration workspace importer explicitly after pnpm's normal and lockfile-only installs omitted it; frozen-lockfile installation now passes.
+- Added a separate CI integration job for Node 22.19.0 and Node 26. Local execution uses Node 26.9.0; the CI matrix itself has not been run here.
+
+Validation: the complete fresh pack/install/test pipeline and its 11 integration checks pass locally. Strict consumer TypeScript compilation includes root, config and Vite exports. Browser dashboard interaction and live Lighthouse collection remain outside this suite until those runtime features are available.

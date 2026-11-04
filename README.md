@@ -20,6 +20,7 @@ pnpm test
 pnpm lint
 pnpm format:check
 pnpm test:package
+pnpm test:integration
 pnpm --filter britepulse dev --help
 pnpm --filter britepulse dev
 pnpm --filter @britepulse/report preview
@@ -63,6 +64,10 @@ britepulse history --json
 ```
 
 See [Vite integration](docs/vite-integration.md) for tested versions, CSS and dynamic import handling, SSR targets and compression estimates.
+
+## Consumer integration tests
+
+`pnpm test:integration` packs and installs the tool into isolated CLI-only and Vite React consumers, then tests public exports, strict TypeScript usage, real builds and the installed CLI workflow. See [integration tests](packages/integration/README.md) for coverage and individual phases. `pnpm test:package` runs the packaging subset.
 
 ## Compatibility
 

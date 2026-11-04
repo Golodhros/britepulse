@@ -1,0 +1,17 @@
+{
+  "name": "@britepulse/integration",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Consumer integration tests against an installed BritePulse tarball",
+  "scripts": {
+    "pack": "node scripts/pack.mjs",
+    "prepare:consumers": "node scripts/prepare-consumers.mjs",
+    "install:consumers": "node scripts/install-consumers.mjs",
+    "test:tarballs": "node --test tests/tarball.test.mjs",
+    "test:types": "node --test tests/types.test.mjs",
+    "test:cli": "node --test tests/workflow.test.mjs",
+    "test:package": "node scripts/test.mjs --package-only",
+    "test:integration": "node scripts/test.mjs"
+  }
+}
