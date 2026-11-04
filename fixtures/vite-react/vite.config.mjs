@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { bundleStats } from 'rollup-plugin-bundle-stats';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root = fileURLToPath(new URL('.', import.meta.url));
 const variant = process.env.BRITEPULSE_VARIANT ?? 'baseline';
 if (!['baseline', 'candidate'].includes(variant)) throw new Error('Invalid fixture variant');
 export default defineConfig({
@@ -32,6 +34,6 @@ export default defineConfig({
     },
     bundleStats({ html: false, json: true, baseline: false }),
   ],
-  resolve: { alias: { 'fixture-variant': resolve(`src/${variant}.js`) } },
+  resolve: { alias: { 'fixture-variant': resolve(root, `src/${variant}.js`) } },
   build: { outDir: `.artifacts/${variant}`, manifest: true },
 });

@@ -19,7 +19,8 @@
   },
   "devDependencies": {
     "typescript": "6.0.3",
-    "@types/node": "26.6.5"
+    "@types/node": "26.6.5",
+    "vite": "8.3.5"
   },
   "description": "Local frontend performance measurement and bundle comparisons",
   "license": "MIT",
@@ -39,6 +40,18 @@
     "./config": {
       "types": "./dist/config.d.ts",
       "import": "./dist/config.js"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.js"
+    }
+  },
+  "peerDependencies": {
+    "vite": "8.3.5"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
     }
   }
 }

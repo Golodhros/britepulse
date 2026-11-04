@@ -117,6 +117,7 @@ export const bundleSnapshotSchema = z
     schemaVersion,
     runId: id,
     adapter: z.enum(['vite', 'next-webpack', 'next-turbopack']),
+    target: z.enum(['client', 'ssr']),
     toolVersions: z.record(nonempty, nonempty),
     capabilities: capabilitiesSchema,
     completeness: completenessSchema,

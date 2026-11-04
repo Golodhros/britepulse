@@ -21,6 +21,7 @@ const snapshot = () => ({
   schemaVersion: 1,
   runId: id,
   adapter: 'vite',
+  target: 'client',
   toolVersions: { vite: '8.3.5' },
   capabilities: { modules: 'unavailable', routes: 'unavailable', compression: 'unavailable' },
   completeness: { status: 'partial', diagnostics: ['Missing original asset'] },

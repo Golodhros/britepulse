@@ -32,11 +32,12 @@ export async function collectRun<T>(
   store: RunStore,
   metadata: RunMetadata,
   operation: (session: RunSession) => Promise<T>,
+  completion: { status: 'complete' | 'partial'; diagnostics?: string[] } = { status: 'complete' },
 ): Promise<{ value: T; manifest: RunManifest }> {
   const session = await store.create(metadata);
   try {
     const value = await operation(session);
-    const manifest = await session.finish('complete');
+    const manifest = await session.finish(completion.status, completion.diagnostics);
     return { value, manifest };
   } catch (error) {
     const status =

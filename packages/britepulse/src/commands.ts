@@ -59,6 +59,34 @@ export async function execute(args: string[]): Promise<void> {
       runs: integer('runs', values.runs),
     });
     print(result);
+  } else if (command === 'analyze') {
+    const { values } = parseArgs({
+      args: rest,
+      options: {
+        ...shared,
+        artifact: { type: 'string' },
+        label: { type: 'string' },
+        target: { type: 'string' },
+        environment: { type: 'string' },
+      },
+    });
+    if (values.help) {
+      console.log(
+        'Usage: britepulse analyze --artifact <path> [--label <name>] [--target client|ssr] [--config <path>] [--json]',
+      );
+      return;
+    }
+    if (!values.artifact)
+      throw new Error(
+        'analyze requires --artifact. Add britepulse/vite to the application and build it first.',
+      );
+    if (values.target !== undefined && values.target !== 'client' && values.target !== 'ssr')
+      throw new Error('target must be client or ssr');
+    const config = await loadConfig(values.config, { environment: values.environment });
+    const { importBundle } = await import('./analyze.js');
+    print(
+      await importBundle(config, resolve(values.artifact), values.label ?? 'bundle', values.target),
+    );
   } else if (command === 'doctor' || command === 'history') {
     const { values } = parseArgs({ args: rest, options: { ...shared, ...measurement } });
     if (values.help) {

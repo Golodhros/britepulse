@@ -162,6 +162,8 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+packageExtensionsChecksum: sha256-qgcEAVfRWCwVSwSr+ksKxdG+deLXtfP1rUN0I8W9PJ8=
+
 importers:
 
   .:
@@ -222,10 +224,7 @@ importers:
         version: 0.16.0(@types/node@26.6.5)(supports-color@8.1.1)
       lighthouse:
         specifier: 13.6.0
-        version: 13.6.0(proxy-agent@8.0.1(supports-color@8.1.1))(supports-color@8.1.1)
-      proxy-agent:
-        specifier: 8.0.1
-        version: 8.0.1(supports-color@8.1.1)
+        version: 13.6.0(supports-color@8.1.1)
 
   fixtures/vite-react:
     dependencies:
@@ -267,6 +266,9 @@ importers:
       typescript:
         specifier: 6.0.3
         version: 6.0.3
+      vite:
+        specifier: 8.3.5
+        version: 8.3.5(@types/node@26.6.5)(jiti@2.7.0)
 
   packages/report:
     dependencies:
@@ -3331,14 +3333,14 @@ snapshots:
 
   '@lhci/cli@0.16.0(@types/node@26.6.5)(supports-color@8.1.1)':
     dependencies:
-      '@lhci/utils': 0.16.0(proxy-agent@6.5.0(supports-color@8.1.1))(supports-color@8.1.1)
+      '@lhci/utils': 0.16.0(supports-color@8.1.1)
       chrome-launcher: 0.13.4(supports-color@8.1.1)
       compression: 1.8.2(supports-color@8.1.1)
       debug: 4.4.3(supports-color@8.1.1)
       express: 4.22.3(supports-color@8.1.1)
       inquirer: 8.2.7(@types/node@26.6.5)
       isomorphic-fetch: 3.0.0
-      lighthouse: 13.6.0(proxy-agent@6.5.0(supports-color@8.1.1))(supports-color@8.1.1)
+      lighthouse: 13.6.0(supports-color@8.1.1)
       lighthouse-logger: 1.2.0(supports-color@8.1.1)
       open: 8.4.2
       proxy-agent: 6.5.0(supports-color@8.1.1)
@@ -3356,18 +3358,17 @@ snapshots:
       - webpack
       - yauzl
 
-  '@lhci/utils@0.16.0(proxy-agent@6.5.0(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@lhci/utils@0.16.0(supports-color@8.1.1)':
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       isomorphic-fetch: 3.0.0
       js-yaml: 5.5.0
-      lighthouse: 13.6.0(proxy-agent@6.5.0(supports-color@8.1.1))(supports-color@8.1.1)
+      lighthouse: 13.6.0(supports-color@8.1.1)
       tree-kill: 1.2.2
     transitivePeerDependencies:
       - ajv
       - bufferutil
       - encoding
-      - proxy-agent
       - rollup
       - supports-color
       - utf-8-validate
@@ -3466,13 +3467,6 @@ snapshots:
   '@paulirish/trace_engine@0.0.67':
     dependencies:
       third-party-web: 0.30.0
-
-  '@puppeteer/browsers@3.2.6(proxy-agent@6.5.0(supports-color@8.1.1))':
-    dependencies:
-      modern-tar: 0.8.6
-      yargs: 18.2.0
-    optionalDependencies:
-      proxy-agent: 6.5.0(supports-color@8.1.1)
 
   '@puppeteer/browsers@3.2.6(proxy-agent@8.0.1(supports-color@8.1.1))':
     dependencies:
@@ -4695,7 +4689,7 @@ snapshots:
 
   lighthouse-stack-packs@1.12.3: {}
 
-  lighthouse@13.6.0(proxy-agent@6.5.0(supports-color@8.1.1))(supports-color@8.1.1):
+  lighthouse@13.6.0(supports-color@8.1.1):
     dependencies:
       '@paulirish/trace_engine': 0.0.67
       '@sentry/node': 11.10.0
@@ -4712,40 +4706,7 @@ snapshots:
       lighthouse-logger: 2.0.2(supports-color@8.1.1)
       lighthouse-stack-packs: 1.12.3
       open: 11.0.4
-      puppeteer-core: 25.16.0(proxy-agent@6.5.0(supports-color@8.1.1))
-      robots-parser: 3.0.1
-      speedline-core: 1.4.3
-      third-party-web: 0.30.0
-      tldts-icann: 7.4.19
-      yargs: 18.2.0
-      yargs-parser: 22.0.0
-    transitivePeerDependencies:
-      - ajv
-      - bufferutil
-      - proxy-agent
-      - rollup
-      - supports-color
-      - utf-8-validate
-      - webpack
-      - yauzl
-
-  lighthouse@13.6.0(proxy-agent@8.0.1(supports-color@8.1.1))(supports-color@8.1.1):
-    dependencies:
-      '@paulirish/trace_engine': 0.0.67
-      '@sentry/node': 11.10.0
-      ajv-formats: 3.0.1
-      axe-core: 4.14.0
-      chrome-launcher: 1.2.2(supports-color@8.1.1)
-      configstore: 8.0.0
-      csp_evaluator: 1.1.8
-      devtools-protocol: 0.0.1727723
-      enquirer: 2.4.1
-      http-link-header: 1.1.4
-      intl-messageformat: 10.7.18
-      js-library-detector: 6.7.0
-      lighthouse-logger: 2.0.2(supports-color@8.1.1)
-      lighthouse-stack-packs: 1.12.3
-      open: 11.0.4
+      proxy-agent: 8.0.1(supports-color@8.1.1)
       puppeteer-core: 25.16.0(proxy-agent@8.0.1(supports-color@8.1.1))
       robots-parser: 3.0.1
       speedline-core: 1.4.3
@@ -4756,7 +4717,6 @@ snapshots:
     transitivePeerDependencies:
       - ajv
       - bufferutil
-      - proxy-agent
       - rollup
       - supports-color
       - utf-8-validate
@@ -5137,20 +5097,6 @@ snapshots:
   proxy-from-env@2.1.0: {}
 
   punycode@2.3.1: {}
-
-  puppeteer-core@25.16.0(proxy-agent@6.5.0(supports-color@8.1.1)):
-    dependencies:
-      '@puppeteer/browsers': 3.2.6(proxy-agent@6.5.0(supports-color@8.1.1))
-      chromium-bidi: 157.0.8090-0(devtools-protocol@0.0.1704951)
-      devtools-protocol: 0.0.1704951
-      typed-query-selector: 2.12.3
-      webdriver-bidi-protocol: 1.0.1
-      ws: 8.22.1
-    transitivePeerDependencies:
-      - bufferutil
-      - proxy-agent
-      - utf-8-validate
-      - yauzl
 
   puppeteer-core@25.16.0(proxy-agent@8.0.1(supports-color@8.1.1)):
     dependencies:

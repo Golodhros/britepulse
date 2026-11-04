@@ -8,11 +8,12 @@ Usage: britepulse [command]
   --help, -h      Show help
   --version, -v   Show version
   init            Create configuration without overwriting an existing file
+  analyze         Import a production Vite bundle artifact into local history
   doctor          Validate the project and resolved measurement profile
   history         List local runs
   (no command)    Open the interactive menu
 
-Measurement collection and report serving are not implemented yet.
+Lighthouse collection and report serving are not implemented yet.
 `;
 try {
   const args = process.argv.slice(2);

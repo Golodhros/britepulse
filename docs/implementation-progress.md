@@ -80,3 +80,18 @@ Review findings and cleanup:
 - Kept comparison/baseline selection pending until the comparison feature has real stored data to use.
 
 Validation: 41 tests pass. End-to-end CLI tests exercise setup, overrides, missing required inputs, unknown options and empty history. A manual CLI smoke check against the actual Vite fixture detects Vite 8.3.5, preserves an overridden run count and lists empty local history without creating a run.
+
+## Iteration 6 Production Vite artifacts and history import
+
+Implemented the optional `britepulse/vite` production plugin, exact emitted sizes, manifest CSS relationships, graph closure, multiple entrypoints, explicit client/SSR targets, optional compression estimates and `analyze --artifact` history import.
+
+Review findings and cleanup:
+
+- Kept graph traversal pure and independent of Vite, filesystem storage and presentation.
+- Used the same snapshot contract at production collection and import boundaries; source build identity is retained separately from the local run ID.
+- Preserved static/async deduplication, unknown references and missing CSS attribution.
+- Kept Vite an optional peer loaded only through its integration subpath.
+- Refused artifact filename collisions and multiple output formats sharing a directory.
+- Preserved partial snapshot status when finalizing a local run.
+
+Validation: 46 tests pass, including actual production builds with multiple HTML entrypoints, static/shared/lazy JS, initial and lazy CSS, compression, custom output directories, SSR separation, disabled manifests and filename collisions. Each emitted size is checked against the corresponding file on disk; candidate changes are imported into distinct local history entries.

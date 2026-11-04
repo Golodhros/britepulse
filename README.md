@@ -53,13 +53,24 @@ node packages/britepulse/dist/cli.js history --json
 
 The installed tarball provides the same commands as `britepulse`. Initialization never overwrites existing settings. Use `--config <path>` to select a configuration file. Run with no command in a terminal for the Clack setup menu. See [configuration contracts](docs/configuration.md) and [local storage](docs/local-storage.md).
 
+## Collect a Vite bundle
+
+Add `britepulse()` from `britepulse/vite` to the application's Vite plugins, build normally, then import the generated artifact:
+
+```sh
+britepulse analyze --artifact /path/to/app/dist/britepulse-bundle.json --label baseline
+britepulse history --json
+```
+
+See [Vite integration](docs/vite-integration.md) for tested versions, CSS and dynamic import handling, SSR targets and compression estimates.
+
 ## Compatibility
 
 See [tested paths and limitations](docs/compatibility.md), [engine decisions](docs/decisions/measurement-engines.md), and [iteration reviews](docs/implementation-progress.md). Run `pnpm test:compatibility` for production fixture pairs and `pnpm test:native` for native Next.js analysis. The live synthetic probe (`pnpm test:synthetic`) requires Chrome and a loopback port.
 
 ## Status and next work
 
-The workspace includes a sample dashboard, a compiled interactive CLI, compatibility fixtures, and prebuilt dashboard assets in the CLI tarball. `--help` and `--version` run without loading Clack, React, charts, or a browser. It includes configuration validation and programmatic immutable local history. It does not collect Lighthouse measurements, analyze bundles, enforce budgets, or export reports yet. Sample values are not performance findings.
+The workspace includes a sample dashboard, a compiled interactive CLI, compatibility fixtures, and prebuilt dashboard assets in the CLI tarball. `--help` and `--version` run without loading Clack, React, charts, or a browser. It includes configuration validation and programmatic immutable local history. It imports production Vite bundle artifacts into local history. Lighthouse collection, Next.js import, computed comparisons, budgets, and real-data report export remain in progress. Sample values are not performance findings.
 
 Next: validate runner and bundler integrations, finalize versioned result contracts, implement immutable local storage under `.britepulse/`, and connect collection and comparisons to the dashboard. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
 

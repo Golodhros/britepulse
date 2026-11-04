@@ -7,7 +7,7 @@ export async function verifyPackage(consumer) {
   const loader = join(consumer, 'block-ui-loader.mjs');
   await writeFile(
     loader,
-    `export async function resolve(specifier, context, next) { if (/^(react|react-dom|@britecharts\\/|@clack\\/|lighthouse)/.test(specifier)) throw new Error('Unexpected heavy dependency: ' + specifier); return next(specifier, context); }`,
+    `export async function resolve(specifier, context, next) { if (/^(react|react-dom|@britecharts\\/|@clack\\/|lighthouse|vite)/.test(specifier)) throw new Error('Unexpected heavy dependency: ' + specifier); return next(specifier, context); }`,
   );
   for (const flag of ['--help', '--version']) {
     const result = spawnSync(

@@ -4,7 +4,6 @@
   "type": "module",
   "devDependencies": {
     "@lhci/cli": "0.16.0",
-    "lighthouse": "13.6.0",
-    "proxy-agent": "8.0.1"
+    "lighthouse": "13.6.0"
   }
 }

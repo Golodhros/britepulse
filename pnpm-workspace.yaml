@@ -7,3 +7,9 @@ minimumReleaseAgeExclude:
   - '@britecharts/core@3.0.0'
   - '@britecharts/react@3.0.0'
   - '@britecharts/wrappers@3.0.0'
+
+# LHCI's proxy-agent 6 must not satisfy the browser downloader's optional v8 peer.
+packageExtensions:
+  'lighthouse@13.6.0':
+    dependencies:
+      proxy-agent: 8.0.1
