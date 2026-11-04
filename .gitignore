@@ -13,3 +13,6 @@ coverage/
 *.tsbuildinfo
 
 .artifacts/
+
+packages/britepulse/LICENSE
+packages/britepulse/README.md

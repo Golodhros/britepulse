@@ -19,3 +19,19 @@ Review findings and cleanup:
 - Kept native analysis and App Router route capabilities partial; successful export is not proof of correct production size attribution.
 
 Validation: all six production fixture builds passed. Artifact checks detect +70,957 JS bytes for Vite and +70,017 for each Next.js Webpack fixture. Native baseline/candidate graph exports detect the added lodash dependency. The synthetic server has three request-handler tests; live paired collection remains blocked by loopback permissions. Broader framework and runner support remains open.
+
+## Iteration 2 Installable package boundary
+
+Implemented compiled strict TypeScript ESM, lazy interactive imports, package exports, help/version, prebuilt report packaging, ESLint, Prettier, and CI. All fixture packages remain private; the CLI also remains private while its release API is under development.
+
+Review findings and cleanup:
+
+- Moved Clack behind the interactive branch so noninteractive commands have no UI dependency startup cost.
+- Removed the source-only executable and made the installed bin target compiled output.
+- Made one build script own report compilation, core compilation, report asset copying and package metadata files.
+- Limited tarball contents to compiled output, license and README. Kept browser dependencies in the report package.
+- Raised the documented Node floor to 22.19 based on Lighthouse's fixture engine requirement.
+- Added a clean consumer verification that blocks UI and measurement imports during help/version execution.
+- Kept the Vite subpath deferred until an actual adapter exists, rather than publishing a placeholder export.
+
+Validation: strict TypeScript checks, lint, seven tests and production dashboard/core builds pass. A tarball was installed into a clean consumer; installed executable version/help and packaged report checks passed, including with UI imports blocked. Network-restricted shell installs use a separate approved install step with the same package verifier. CI runs the full package smoke test in one command.

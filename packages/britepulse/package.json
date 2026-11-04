@@ -4,18 +4,36 @@
   "private": true,
   "type": "module",
   "bin": {
-    "britepulse": "./src/cli.mjs"
+    "britepulse": "./dist/cli.js"
   },
   "scripts": {
-    "build": "node --check src/cli.mjs",
+    "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
-    "test": "node --test",
-    "dev": "node src/cli.mjs"
+    "test": "node --test test/*.test.mjs",
+    "dev": "node dist/cli.js",
+    "prepack": "node ../../scripts/build-package.mjs"
   },
   "dependencies": {
     "@clack/prompts": "1.8.1"
   },
   "devDependencies": {
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "@types/node": "26.6.5"
+  },
+  "description": "Local frontend performance measurement and bundle comparisons",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   }
 }

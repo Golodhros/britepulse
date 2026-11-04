@@ -3,15 +3,25 @@
   "private": true,
   "packageManager": "pnpm@12.6.0",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.19.0"
   },
   "scripts": {
     "dev": "pnpm --filter @britepulse/report dev",
-    "build": "pnpm -r build",
+    "build": "node scripts/build-package.mjs",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm --filter britepulse test",
+    "test": "node scripts/test.mjs",
     "test:compatibility": "node scripts/compatibility.mjs",
     "test:native": "node scripts/probe-next-native.mjs",
-    "test:synthetic": "node fixtures/synthetic/probe.mjs"
+    "test:synthetic": "node fixtures/synthetic/probe.mjs",
+    "test:package": "node scripts/test-package.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "eslint": "10.14.0",
+    "typescript-eslint": "8.72.1",
+    "prettier": "3.9.10",
+    "@types/node": "26.6.5"
   }
 }

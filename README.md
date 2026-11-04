@@ -4,7 +4,7 @@ An open source local workflow for frontend performance checks, bundle analysis, 
 
 ## Development
 
-Use Node.js 22.12 or newer and pnpm 12.6.0.
+Use Node.js 22.19 or newer and pnpm 12.6.0.
 
 ```sh
 pnpm install
@@ -17,12 +17,15 @@ Open the local URL printed by Vite. The dashboard uses React, TypeScript, Tailwi
 pnpm build
 pnpm typecheck
 pnpm test
+pnpm lint
+pnpm format:check
+pnpm test:package
 pnpm --filter britepulse dev --help
 pnpm --filter britepulse dev
 pnpm --filter @britepulse/report preview
 ```
 
-The last command previews the production report after building it. Vite uses relative asset URLs so the prebuilt dashboard can be packaged for local serving. Report export and a CLI report server are future work.
+Build once before running the compiled CLI. The last command previews the production report after building it. Vite uses relative asset URLs so the prebuilt dashboard can be packaged for local serving. Report export and a CLI report server are future work.
 
 ## Workspace
 
@@ -38,9 +41,13 @@ pnpm dlx shadcn@latest add button
 
 The current scaffold adapts the Shadcn Card component. See [Shadcn Vite setup](https://ui.shadcn.com/docs/installation/vite) and [Britecharts React](https://britecharts.github.io/britecharts/docs/packages/react-readme).
 
+## Compatibility
+
+See [tested paths and limitations](docs/compatibility.md), [engine decisions](docs/decisions/measurement-engines.md), and [iteration reviews](docs/implementation-progress.md). Run `pnpm test:compatibility` for production fixture pairs and `pnpm test:native` for native Next.js analysis. The live synthetic probe (`pnpm test:synthetic`) requires Chrome and a loopback port.
+
 ## Status and next work
 
-The scaffold includes a sample dashboard and an interactive CLI entry point. It does not collect Lighthouse measurements, analyze bundles, persist history, enforce budgets, or export reports yet. Sample values are not performance findings.
+The workspace includes a sample dashboard, a compiled interactive CLI, compatibility fixtures, and prebuilt dashboard assets in the CLI tarball. `--help` and `--version` run without loading Clack, React, charts, or a browser. It does not collect Lighthouse measurements, analyze bundles, persist history, enforce budgets, or export reports yet. Sample values are not performance findings.
 
 Next: validate runner and bundler integrations, finalize versioned result contracts, implement immutable local storage under `.britepulse/`, and connect collection and comparisons to the dashboard. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
 
