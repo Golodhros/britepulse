@@ -49,3 +49,19 @@ Review findings and cleanup:
 - Kept measurement computation and filesystem operations outside the schema module.
 
 Validation: tests cover precedence, invalid values and schema versions, file/path resolution, fingerprint stability, nullable snapshot round trips, sample counts, nonfinite and negative values, entrypoint accounting, failed samples, lifecycle timestamps, comparison null/zero cases and unknown-budget outcomes.
+
+## Iteration 4 Local history and process lifecycle
+
+Implemented UUID run directories, atomic metadata and artifact writes, immutable artifact names, serialized per-run writes, explicit final states, robust discovery, unique comparison directories, temporary workspaces, collection lifecycle handling, and asynchronous shell-free child processes.
+
+Review findings and cleanup:
+
+- Prevented a queued write/finalization race from dropping artifact references.
+- Made failed writes incompatible with a complete run; callers can finalize a partial or failed state instead.
+- Restricted session construction to the store boundary and return cloned manifests to avoid external mutation.
+- Reused one atomic JSON writer for manifests and comparisons.
+- Rejected traversal, symlinked artifact directories and manifest ID mismatches.
+- Kept storage independent of process policy; a separate orchestration module maps collection errors to terminal states.
+- Added forced process-group cleanup after interruption, including when the immediate child exits before its descendants.
+
+Validation: 35 tests pass, including concurrent same-label runs, artifact races and duplicate writes, malformed history, timestamp sorting, terminal state persistence, temporary cleanup, comparison identity, literal shell metacharacters, timeouts, cancellation, spawn errors and output callback failures.
