@@ -95,3 +95,38 @@ pnpm test:synthetic:collector
 ```
 
 This builds the core, binds a local synthetic server and requests three real navigations. Chrome and loopback permission are required. A `listen EPERM` failure occurs before measurement and is not a passing browser check. The separate `pnpm test:synthetic` command compares direct Lighthouse and LHCI.
+
+## Import a Next.js Pages Router Webpack build
+
+Use a Next.js 16.4.5 Pages Router application with `bundle.adapter: "next-webpack"`. Capture client stats by adding this plugin inside the existing `webpack(config, { isServer })` callback in `next.config.mjs`, preserving existing settings and plugins:
+
+```js
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+// Inside the existing webpack callback:
+if (!isServer) {
+  config.plugins.push({
+    apply(compiler) {
+      compiler.hooks.done.tap('BritePulseClientStats', (stats) => {
+        const directory = resolve('.next'); // Use your actual distDir.
+        mkdirSync(directory, { recursive: true });
+        writeFileSync(
+          resolve(directory, 'client-stats.json'),
+          JSON.stringify(stats.toJson({ all: false, version: true, assets: true })),
+        );
+      });
+    },
+  });
+}
+// Return config as usual.
+```
+
+Build using the application's installed Next.js CLI, then import from the actual build directory:
+
+```sh
+pnpm exec next build --webpack
+pnpm exec britepulse analyze --next-build .next --label next-baseline --json
+```
+
+Inspect `normalized/bundle.json` under the returned run ID. Initial route sets include shared CSS and page assets; the snapshot is explicitly partial because asynchronous route attribution is unavailable. See [Next.js reference](next-pages-integration.md) for required files and rejected router/target combinations. Do not change a Turbopack application's bundler just to use this importer.

@@ -65,3 +65,6 @@ export { reportContext, layoutShiftUnit, lighthouseNormalizer, invalidReportCont
 import { measureProject } from 'britepulse';
 const experimentalCollector: typeof measureProject = measureProject;
 export { experimentalCollector };
+
+import { normalizeNextPagesBundle, importNextPagesBundle } from 'britepulse';
+export { normalizeNextPagesBundle, importNextPagesBundle };

@@ -69,6 +69,7 @@ async function analyze(rest: string[]): Promise<void> {
     options: {
       ...shared,
       artifact: { type: 'string' },
+      'next-build': { type: 'string' },
       label: { type: 'string' },
       target: { type: 'string' },
       environment: { type: 'string' },
@@ -76,21 +77,28 @@ async function analyze(rest: string[]): Promise<void> {
   });
   if (values.help) {
     console.log(
-      'Usage: britepulse analyze --artifact <path> [--label <name>] [--target client|ssr] [--config <path>] [--json]',
+      'Usage: britepulse analyze (--artifact <path> | --next-build <directory>) [--label <name>] [--target client|ssr] [--config <path>] [--json]',
     );
 
     return;
   }
-  if (!values.artifact)
-    throw new Error(
-      'analyze requires --artifact. Add britepulse/vite to the application and build it first.',
-    );
+  if (Boolean(values.artifact) === Boolean(values['next-build']))
+    throw new Error('analyze requires exactly one of --artifact or --next-build');
   if (values.target !== undefined && values.target !== 'client' && values.target !== 'ssr')
     throw new Error('target must be client or ssr');
   const config = await loadConfig(values.config, { environment: values.environment });
+  if (values['next-build']) {
+    if (values.target === 'ssr') throw new Error('Next.js import supports client assets only');
+    const { importNextPagesBundle } = await import('./next-pages.js');
+    print(
+      await importNextPagesBundle(config, resolve(values['next-build']), values.label ?? 'bundle'),
+    );
+
+    return;
+  }
   const { importBundle } = await import('./analyze.js');
   print(
-    await importBundle(config, resolve(values.artifact), values.label ?? 'bundle', values.target),
+    await importBundle(config, resolve(values.artifact!), values.label ?? 'bundle', values.target),
   );
 }
 

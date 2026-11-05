@@ -16,5 +16,6 @@ const tests = packageOnly
       'tests/types.test.mjs',
       'tests/workflow.test.mjs',
       'tests/measure.test.mjs',
+      'tests/next-pages.test.mjs',
     ];
 await run(process.execPath, ['--test', ...tests], { cwd: integrationRoot });

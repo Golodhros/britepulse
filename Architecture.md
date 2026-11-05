@@ -19,23 +19,26 @@ flowchart LR
   App[Vite production build] --> Plugin[Optional britepulse/vite plugin]
   Plugin --> Artifact[Bundle JSON artifact]
   Artifact --> Collect
+  Next[Next.js Pages client Webpack build] --> NextImport[Manifest and stats importer]
+  NextImport --> Collect
   Store -. future real-data connection .-> UI[Prebuilt React dashboard]
   UI --> Charts[Shadcn and Britecharts]
 ```
 
-Solid arrows describe implemented relationships. The dashed history-to-dashboard link is planned: the dashboard currently displays labeled sample data. Next.js fixture builds are compatibility experiments, not evidence of a shipping importer until its own validation is complete.
+Solid arrows describe implemented relationships. The dashed history-to-dashboard link is planned: the dashboard currently displays labeled sample data. The Next.js importer is validated for Pages Router initial assets only; async, App Router and Turbopack attribution remain unavailable.
 
-| Boundary                    | Owner                                                                  | Responsibility                                                                     |
-| --------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| CLI and prompts             | `packages/britepulse/src/cli.ts`, `commands.ts`, `interactive.ts`      | Argument parsing, JSON output, guided setup and cancellation requests              |
-| Configuration and contracts | `config.ts`, `contracts.ts`, `validation.ts`                           | Defaults, validation, inferred types, profile fingerprints and explicit unknowns   |
-| History and processes       | `store.ts`, `process.ts`, `orchestration.ts`                           | Immutable identities, atomic visibility, temporary work and process termination    |
-| Synthetic collection        | `measure.ts`, `synthetic-scheduler.ts`, `synthetic-aggregation.ts`     | Attempt policy, sample persistence, per-metric aggregation and terminal run status |
-| Lighthouse adapter          | `lighthouse-runner.ts`, `lighthouse-worker.ts`, `lighthouse-report.ts` | Engine resolution, process isolation, report retention and normalization           |
-| Vite adapter                | `vite.ts`, `vite-collector.ts`, `bundle-graph.ts`                      | Production artifact collection and emitted graph accounting                        |
-| Dashboard                   | `packages/report`                                                      | React presentation; compiled before packaging                                      |
-| Consumer tests              | `packages/integration`                                                 | Production tarball installation and public-interface checks                        |
-| Compatibility experiments   | `fixtures`                                                             | Pinned upstream builds, synthetic inputs and reproducible evidence                 |
+| Boundary                    | Owner                                                                  | Responsibility                                                                                    |
+| --------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| CLI and prompts             | `packages/britepulse/src/cli.ts`, `commands.ts`, `interactive.ts`      | Argument parsing, JSON output, guided setup and cancellation requests                             |
+| Configuration and contracts | `config.ts`, `contracts.ts`, `validation.ts`                           | Defaults, validation, inferred types, profile fingerprints and explicit unknowns                  |
+| History and processes       | `store.ts`, `process.ts`, `orchestration.ts`                           | Immutable identities, atomic visibility, temporary work and process termination                   |
+| Synthetic collection        | `measure.ts`, `synthetic-scheduler.ts`, `synthetic-aggregation.ts`     | Attempt policy, sample persistence, per-metric aggregation and terminal run status                |
+| Lighthouse adapter          | `lighthouse-runner.ts`, `lighthouse-worker.ts`, `lighthouse-report.ts` | Engine resolution, process isolation, report retention and normalization                          |
+| Next.js importer            | `next-pages.ts`                                                        | Validated Pages client stats and manifest-backed initial route sets; explicit partial attribution |
+| Vite adapter                | `vite.ts`, `vite-collector.ts`, `bundle-graph.ts`                      | Production artifact collection and emitted graph accounting                                       |
+| Dashboard                   | `packages/report`                                                      | React presentation; compiled before packaging                                                     |
+| Consumer tests              | `packages/integration`                                                 | Production tarball installation and public-interface checks                                       |
+| Compatibility experiments   | `fixtures`                                                             | Pinned upstream builds, synthetic inputs and reproducible evidence                                |
 
 Files in the table are relative to `packages/britepulse/src` unless stated otherwise. See [the source tree](packages/britepulse/src) and [workspace manifests](package.json) for the maintained interfaces and scripts.
 

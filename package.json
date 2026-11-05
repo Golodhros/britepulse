@@ -11,6 +11,7 @@
     "typecheck": "pnpm -r typecheck",
     "test": "node scripts/test.mjs",
     "test:compatibility": "node scripts/compatibility.mjs",
+    "test:next-pages": "node scripts/probe-next-pages-import.mjs",
     "test:native": "node scripts/probe-next-native.mjs",
     "test:synthetic": "node fixtures/synthetic/probe.mjs",
     "test:synthetic:collector": "node scripts/probe-synthetic-collector.mjs",

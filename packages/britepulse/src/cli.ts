@@ -8,7 +8,7 @@ Usage: britepulse [command]
   --help, -h      Show help
   --version, -v   Show version
   init            Create configuration without overwriting an existing file
-  analyze         Import a production Vite bundle artifact into local history
+  analyze         Import a Vite artifact or Next.js Pages Webpack build into history
   measure         Experimental cold-cache Lighthouse collection (requires --experimental)
   doctor          Validate the project and resolved measurement profile
   history         List local runs

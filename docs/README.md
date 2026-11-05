@@ -21,6 +21,7 @@ Choose the kind of help you need. These docs follow [Diátaxis](https://diataxis
 
 - [CLI commands](reference.md)
 - [Configuration, contracts and programmatic APIs](configuration.md)
+- [Next.js Pages Router import](next-pages-integration.md)
 - [Vite integration options and artifact semantics](vite-integration.md)
 - [Storage and process behavior](local-storage.md)
 - [Compatibility evidence and limits](compatibility.md)

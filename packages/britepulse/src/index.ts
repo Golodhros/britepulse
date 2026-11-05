@@ -23,3 +23,4 @@ export type {
 export { normalizeLighthouseReport, lighthouseMetricDefinitions } from './lighthouse-report.js';
 export type { LighthouseReportContext, NormalizedLighthouseReport } from './lighthouse-report.js';
 export { measureProject } from './measure.js';
+export { importNextPagesBundle, normalizeNextPagesBundle } from './next-pages.js';
