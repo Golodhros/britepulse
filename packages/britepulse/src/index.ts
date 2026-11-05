@@ -16,3 +16,5 @@ export type {
   SyntheticSchedule,
   SyntheticScheduleOptions,
 } from './synthetic-scheduler.js';
+export { normalizeLighthouseReport, lighthouseMetricDefinitions } from './lighthouse-report.js';
+export type { LighthouseReportContext, NormalizedLighthouseReport } from './lighthouse-report.js';

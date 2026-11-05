@@ -183,3 +183,17 @@ Quality review and cleanup:
 - Added eight focused scheduling cases, including cancellation before startup, cancellation during work, cleanup ordering, warmup failure, bounded retries, invalid output and persistence failure. Fixed spacing findings in the added regression tests.
 
 Validation: lint, strict typechecks, formatting and core/fixture tests pass, along with fresh installed-package runtime/type/workflow checks. Production packaging runs through prepack. This is a scheduling API milestone; it does not add a CLI measurement command or validate live Lighthouse collection. Active runner cancellation is cooperative and runner cleanup/timeout enforcement still require browser-adapter evidence.
+
+## Iteration 13 Lighthouse report normalization
+
+Added `normalizeLighthouseReport` and immutable `lighthouseMetricDefinitions` for the pinned Lighthouse 13.6.0 navigation report format. The adapter extracts numeric navigation metrics, unitless layout shift and fractional performance scores into scheduler-compatible outcomes. It retains metadata, diagnostics and supplied original-report references without loading Lighthouse or browser dependencies.
+
+Quality review and cleanup:
+
+- Checked field names, navigation mode, numeric units and score scale against the installed pinned Lighthouse source/types. Tests use public synthetic report objects; they are not captured live browser evidence.
+- Preserved missing/error-mode/incompatible-unit/nonfinite measurements as unknown rather than parsing display strings or substituting audit scores. Partial data remains a successful attempt, leaving completeness to aggregation rather than triggering score-driven retries.
+- Made runtime errors and unexpected final URLs fail attempts and discard stale values. Requested URLs must match the scheduled URL. Documented the conservative redirect policy and that same-URL login pages still require authentication validation.
+- Fixed a public declaration gap discovered during review: computed metric definitions exposed only the performance-score key to TypeScript. Explicit immutable definitions now preserve all metric names and units; an installed-consumer assertion checks layout shift's exact unit.
+- Kept report parsing separate from browser startup, profile verification, storage and original-artifact persistence. Added six focused normalization cases and composition coverage through scheduling and aggregation. Fixed a misplaced expected-error directive found by the first installed type-check run.
+
+Validation: lint, strict typechecks, formatting, core/fixture tests and fresh installed-consumer runtime/declaration/workflow checks pass. Production packaging runs through prepack. Live Lighthouse execution, authentication, cache semantics and browser cleanup remain unvalidated; this milestone adds report normalization, not a CLI collection command.

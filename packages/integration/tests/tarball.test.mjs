@@ -128,3 +128,28 @@ console.log(JSON.stringify(samples.map(({attempt,status,warmup})=>({attempt,stat
     { attempt: 2, status: 'success', warmup: false },
   ]);
 });
+
+test('installed Lighthouse normalizer preserves unknowns and fractional scores without Lighthouse', () => {
+  const result = JSON.parse(
+    success(
+      command('cli', process.execPath, [
+        '--input-type=module',
+        '--eval',
+        `import { normalizeLighthouseReport } from 'britepulse';
+console.log(JSON.stringify(normalizeLighthouseReport({
+  lighthouseVersion:'13.6.0', gatherMode:'navigation', requestedUrl:'https://example.com/',
+  finalDisplayedUrl:'https://example.com/', fetchTime:'2026-11-05T12:00:00.000Z',
+  audits:{'cumulative-layout-shift':{numericValue:0.25,numericUnit:'unitless',scoreDisplayMode:'numeric'}},
+  categories:{performance:{score:0.85}},
+}, {url:'https://example.com/',reports:{json:null,html:null}})));`,
+      ]),
+    ),
+  );
+  assert.equal(result.outcome.status, 'success');
+  assert.deepEqual(result.outcome.metrics['cumulative-layout-shift'], {
+    value: 0.25,
+    unit: 'unitless',
+  });
+  assert.deepEqual(result.outcome.metrics['performance-score'], { value: 0.85, unit: 'score' });
+  assert.equal(result.outcome.metrics['largest-contentful-paint'].value, null);
+});

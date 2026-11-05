@@ -46,3 +46,18 @@ const scheduledSamples = scheduleSyntheticSamples(schedule, runner);
 // @ts-expect-error Runner results must include the artifact/error contract.
 const invalidRunner: SyntheticRunner = async () => ({ status: 'success', metrics: {} });
 export { scheduledSamples, invalidRunner };
+
+import {
+  normalizeLighthouseReport,
+  lighthouseMetricDefinitions,
+  type LighthouseReportContext,
+} from 'britepulse';
+const reportContext: LighthouseReportContext = {
+  url: 'https://example.com/',
+  reports: { json: null, html: null },
+};
+const layoutShiftUnit: 'unitless' = lighthouseMetricDefinitions['cumulative-layout-shift'].unit;
+const lighthouseNormalizer: typeof normalizeLighthouseReport = normalizeLighthouseReport;
+// @ts-expect-error Artifact references cannot be numeric paths.
+const invalidReportContext: LighthouseReportContext['reports']['json'] = 1;
+export { reportContext, layoutShiftUnit, lighthouseNormalizer, invalidReportContext };
