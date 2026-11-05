@@ -2,27 +2,16 @@
 
 The first shipping adapter supports Vite 8.3.5, the version validated by fixtures. Other versions fail with a diagnostic. The integration is production-only and uses Vite hooks; it does not rewrite application files.
 
-Add the optional integration to the application's existing Vite configuration:
+## Integration interface
 
-```ts
-import { defineConfig } from 'vite';
-import { britepulse } from 'britepulse/vite';
+The `britepulse` named export from `britepulse/vite` creates a production-only Vite plugin. Add it alongside the application's other plugins. [How-to guides](how-to-guides.md) contains setup, compression and SSR recipes; [Getting started](getting-started.md) provides a complete exercise.
 
-export default defineConfig({
-  plugins: [britepulse({ compression: true })],
-});
-```
+| Option        | Default                  | Meaning                                                |
+| ------------- | ------------------------ | ------------------------------------------------------ |
+| `compression` | `false`                  | Include gzip level 9 and Brotli quality 11 estimates   |
+| `fileName`    | `britepulse-bundle.json` | Single output JSON filename; collisions fail the build |
 
-Build the application normally. The adapter writes `britepulse-bundle.json` into the actual output directory. `fileName` can select a different single JSON filename. An artifact filename collision fails the build. Multiple entrypoints and separate client/SSR builds are supported. Multiple output formats sharing one directory are rejected rather than silently overwriting each other's artifact.
-
-Import the artifact into local history:
-
-```sh
-britepulse analyze --artifact /path/to/app/dist/britepulse-bundle.json --label baseline
-britepulse history --json
-```
-
-Use `--config <path>` to choose settings, and explicitly select `--target ssr` to import an SSR artifact. The original JSON is retained. The normalized snapshot receives the local run ID; the source artifact's build ID is preserved in manifest build identity. Repeated imports create distinct local runs.
+The plugin writes into the actual build output directory. Multiple entrypoints and separate client/SSR builds are supported. Multiple output formats sharing one directory are rejected. `analyze --artifact <path>` imports the original JSON; `--target ssr` is required for SSR artifacts. The normalized snapshot receives a local run ID, while manifest build identity preserves the source build ID. Repeated imports create distinct runs.
 
 ## What the artifact measures
 

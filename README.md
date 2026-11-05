@@ -2,6 +2,10 @@
 
 An open source local workflow for frontend performance checks, bundle analysis, and release comparisons for Vite and Next.js applications.
 
+## Documentation
+
+Start with the [documentation home](docs/README.md), [Getting started tutorial](docs/getting-started.md), [How-to guides](docs/how-to-guides.md), [CLI reference](docs/reference.md), or [architecture diagrams](Architecture.md). Documentation separates tutorials, recipes, reference and explanation following Diátaxis.
+
 ## Development
 
 Use Node.js 22.19 or newer and pnpm 12.6.0.
@@ -83,7 +87,7 @@ See [tested paths and limitations](docs/compatibility.md), [engine decisions](do
 
 The workspace includes a sample dashboard, a compiled interactive CLI, compatibility fixtures, and prebuilt dashboard assets in the CLI tarball. `--help` and `--version` run without loading Clack, React, charts, or a browser. It includes configuration validation and programmatic immutable local history. It imports production Vite bundle artifacts into local history. An experimental `measure --experimental` command collects cold-cache Lighthouse reports using application-installed Lighthouse 13.6.0 and chrome-launcher 1.2.2 on macOS/Linux; live browser compatibility is unvalidated. Warm-cache collection, authentication hooks, Next.js import, computed comparisons, budgets, and real-data report export remain in progress. Sample values are not performance findings.
 
-Next: finish runner validation and median aggregation, add automated build invocation and validated Next.js import, and connect comparisons and real data to the dashboard before budgets and release validation. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
+Next: finish live runner validation, add automated build invocation and validated Next.js import, and connect comparisons and real data to the dashboard before budgets and release validation. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
 
 ## License
 

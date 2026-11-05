@@ -213,3 +213,11 @@ Quality review and cleanup:
 - Added a dedicated real collector probe and updated user-facing commands, setup, storage layout, exit statuses and experimental limits.
 
 Validation: 74 core/fixture tests, lint, strict typechecks and formatting pass. Fresh installed-consumer checks exercise the packaged worker, command, runtime exports and public declarations, alongside existing Vite workflows and production prepack builds. The real engine comparison and real collector probe were both attempted and failed at `listen EPERM` on loopback before measurement. Live Lighthouse/Chrome execution, authentication and actual cache/device semantics remain unverified; the feature stays explicitly experimental.
+
+## Iteration 15 Diátaxis documentation
+
+Added a documentation home organized into tutorials, task recipes, reference and explanation. Added a getting-started exercise using an independently installed local tarball and a tiny Vite application; a how-to page with seven recipes; a command/exit-status reference; a measurement-model explanation; and root `Architecture.md` with workspace, sequence and lifecycle diagrams.
+
+Review and cleanup: retained established reference paths, separated Vite setup instructions from interface details, corrected stale claims that CLI collection was future work and median aggregation unimplemented, and kept sample-dashboard/live-browser limitations explicit. The architecture diagrams distinguish implemented relationships from the future real-data dashboard connection.
+
+Validation: local documentation links resolve, code fences are balanced, Oxfmt and whitespace checks pass. The tutorial's package/app/config blocks were used to pack and install the tool, initialize and inspect the project, build the Vite application, import it twice and inspect distinct same-label history entries. No server or browser was required. Mermaid source was reviewed; rendered diagrams were not previewed in this environment.
