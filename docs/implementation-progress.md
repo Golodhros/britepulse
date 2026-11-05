@@ -169,3 +169,17 @@ Quality review and cleanup:
 - Documented the caller's responsibility to separate profiles and schedule retry slots. Aggregation completeness does not imply budget eligibility; fewer than three valid samples remain insufficient to pass budgets.
 
 Validation: lint, strict typechecks, formatting, the existing core suite plus five aggregation cases, and all 12 fresh-tarball integration checks pass. Production report/core packaging runs through prepack. This milestone does not add live Lighthouse execution, scheduling or budget evaluation; the live browser probe remains unverified because of the previously observed loopback restriction.
+
+## Iteration 12 Synthetic scheduling foundation
+
+Added `scheduleSyntheticSamples`, a sequential runner-independent scheduler using existing configuration defaults and bounds. Warmups precede measured slots; failed measured attempts receive bounded replacements per slot. Exhausted slots remain missing, and successful measurements are never retried based on score or missing metrics. Every validated attempt has a unique ID and increasing attempt number and can be persisted through an awaited callback.
+
+Quality review and cleanup:
+
+- Kept browser ownership, authentication, cache policy and timeouts in the runner/caller boundary; cancellation propagates to the active runner and prevents new attempts while awaiting cleanup.
+- Distinguished failed runner attempts from invalid adapter output and persistence failures. The latter stop scheduling rather than consuming retries.
+- Retained settled samples on scheduling errors, including an unpersisted sample when its callback fails; documented that error history is not proof of persistence.
+- Protected retained sample data from callback mutation and tested integration with per-metric aggregation after an exhausted slot.
+- Added eight focused scheduling cases, including cancellation before startup, cancellation during work, cleanup ordering, warmup failure, bounded retries, invalid output and persistence failure. Fixed spacing findings in the added regression tests.
+
+Validation: lint, strict typechecks, formatting and core/fixture tests pass, along with fresh installed-package runtime/type/workflow checks. Production packaging runs through prepack. This is a scheduling API milestone; it does not add a CLI measurement command or validate live Lighthouse collection. Active runner cancellation is cooperative and runner cleanup/timeout enforcement still require browser-adapter evidence.

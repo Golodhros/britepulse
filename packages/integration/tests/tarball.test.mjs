@@ -107,3 +107,24 @@ console.log(JSON.stringify(aggregateSyntheticSamples({
   assert.equal(result.metrics.lcp.median, null);
   assert.equal(result.metrics.lcp.validSamples, 0);
 });
+
+test('installed scheduler retries failures and preserves measured attempt history', () => {
+  const result = JSON.parse(
+    success(
+      command('cli', process.execPath, [
+        '--input-type=module',
+        '--eval',
+        `import { scheduleSyntheticSamples } from 'britepulse';
+const samples = await scheduleSyntheticSamples({url:'https://example.com/',runs:1,retries:1}, async ({attempt}) => ({
+  status: attempt === 1 ? 'failed' : 'success', metrics: {}, error: attempt === 1 ? 'Crash' : null,
+  reports: {json:null,html:null},
+}));
+console.log(JSON.stringify(samples.map(({attempt,status,warmup})=>({attempt,status,warmup}))));`,
+      ]),
+    ),
+  );
+  assert.deepEqual(result, [
+    { attempt: 1, status: 'failed', warmup: false },
+    { attempt: 2, status: 'success', warmup: false },
+  ]);
+});

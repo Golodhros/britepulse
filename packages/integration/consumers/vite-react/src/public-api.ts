@@ -33,3 +33,16 @@ const aggregationStatus: 'complete' | 'partial' =
 // @ts-expect-error Metric directions must use the public measurement vocabulary.
 const invalidDirection: SyntheticAggregationInput['metrics'][string]['direction'] = 'faster';
 export { aggregationStatus, invalidDirection };
+
+import { scheduleSyntheticSamples, type SyntheticRunner, type SyntheticSchedule } from 'britepulse';
+const schedule: SyntheticSchedule = { url: 'https://example.com/', runs: 1 };
+const runner: SyntheticRunner = async () => ({
+  status: 'success',
+  metrics: {},
+  error: null,
+  reports: { json: null, html: null },
+});
+const scheduledSamples = scheduleSyntheticSamples(schedule, runner);
+// @ts-expect-error Runner results must include the artifact/error contract.
+const invalidRunner: SyntheticRunner = async () => ({ status: 'success', metrics: {} });
+export { scheduledSamples, invalidRunner };

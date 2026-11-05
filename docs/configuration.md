@@ -44,7 +44,7 @@ Runtime Zod schemas and inferred TypeScript types share one definition in `contr
 - `Comparison` preserves nullable measurements and signed differences. Missing measurements cannot acquire deltas; zero baselines cannot acquire percentages; incompatible profiles cannot acquire numeric deltas.
 - `BudgetResult` cannot report a pass or violation for an unknown measurement. It records an error with a reason instead.
 
-These contracts validate serialization boundaries. Per-metric aggregation is available through `aggregateSyntheticSamples`; runner scheduling, comparison calculations and budget evaluation remain separate implementation steps. All report artifact references are relative paths without traversal; local history storage will validate them again at the filesystem boundary.
+These contracts validate serialization boundaries. Per-metric aggregation is available through `aggregateSyntheticSamples`; runner-independent scheduling is available through `scheduleSyntheticSamples`; live collection, comparison calculations and budget evaluation remain separate implementation steps. All report artifact references are relative paths without traversal; local history storage will validate them again at the filesystem boundary.
 
 ## Synthetic aggregation API
 
@@ -53,3 +53,13 @@ These contracts validate serialization boundaries. Per-metric aggregation is ava
 The function excludes warmups and failed attempts from values, retains failed measured attempts in `attemptedSamples`, and computes unrounded per-metric medians and median absolute deviation. Missing or null metrics stay unknown; missing values never become zero. All requested successful samples and all requested per-metric values are required for `complete` status. Partial aggregates retain available values and diagnostics for inspection. Duplicate IDs/attempt numbers, mixed URLs, excess successful samples and incompatible metric units are rejected.
 
 Attempts are numbered uniquely across warmups and measurements for this URL. Retry scheduling must replace failed measured attempts only; the aggregation API does not schedule or validate slot ownership. A complete one- or two-sample aggregate is still insufficient to pass a budget: budget evaluation must require at least three valid samples per metric as well as completeness. This API does not implement budget evaluation or live Lighthouse collection.
+
+## Synthetic scheduling API
+
+`scheduleSyntheticSamples({ url, runs, warmups, retries }, runner, options)` runs one URL sequentially, using the same defaults and bounds as the synthetic configuration. `retries` is the maximum number of replacements per measured slot, not a pool of extra successful measurements. Exhausting a slot's retries leaves it missing and proceeds to the next slot. Failed warmups stop scheduling without retries. Scores and missing metric values never cause retries of a successful attempt.
+
+The runner receives `{ url, attempt, warmup, signal }` and returns `{ status, metrics, error, reports }`. The scheduler assigns sample IDs and monotonically increasing attempt numbers across warmups and measurements, validates returned samples, and retains all settled attempts. Thrown runner errors become failed attempts with unknown reports; return a failed result explicitly when artifacts are available. Invalid results stop scheduling rather than consuming retries.
+
+An optional async `onSample` callback runs after each validated sample and before another attempt starts. Use it to persist samples and their artifact references. A callback failure stops scheduling. The callback receives a copy, so it cannot change aggregation inputs. `SyntheticScheduleError.samples` retains validated samples collected before an error, including a sample whose persistence callback failed; callers must not assume those samples were all persisted.
+
+An optional `signal` prevents new attempts after cancellation and is passed to the runner. The scheduler awaits the active runner and persistence callback so cleanup can finish; runners must honor cancellation, enforce their configured attempt timeout, and clean up browser/process resources before settling. It does not forcibly interrupt an uncooperative runner. Cache policy, authentication, profile isolation and original report persistence remain adapter/caller responsibilities. This API adds no Lighthouse dependency or CLI measurement command.
