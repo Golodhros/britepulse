@@ -27,6 +27,7 @@ export default function App() {
     { name: 'Baseline', value: values[0] },
     { name: 'Candidate', value: values.at(-1)! },
   ];
+
   return (
     <main className="mx-auto max-w-6xl space-y-8 px-5 py-10 sm:px-10">
       <header className="flex flex-wrap items-start justify-between gap-4">

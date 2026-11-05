@@ -141,3 +141,17 @@ Review findings and cleanup:
 - Distinguished schemas, experiments and sample views from shipping measurement/comparison/report capabilities. Updated stale README next-work wording to match the actual implementation.
 
 Validation: all eight skills pass the skill-creator frontmatter/scaffold validator; all local instruction links resolve; the new Markdown passes Prettier and the diff has no whitespace errors. Reviewed routing for core tests, installed Vite consumers, committed changes on main and documentation-only audits. Runtime code and dependencies are unchanged, so unit and integration suites were not rerun for this documentation-only change.
+
+## Iteration 10 Oxfmt and function spacing
+
+Replaced the direct Prettier dependency and configuration with Oxfmt. The existing format/format-check commands keep explicit write/check modes, previous quote/width/trailing-comma preferences, and generated-output/lockfile exclusions. ESLint and SonarJS remain the linting workflow.
+
+Review findings and cleanup:
+
+- Added the maintained ESLint Stylistic padding rule for blank lines around function declarations and exports, including exported arrow/function expressions, and before returns when another statement precedes them.
+- Applied layout-only fixes and formatting across the repository; the application, fixture and test changes are whitespace-only.
+- Kept export lists and unrelated declarations outside the function-specific selectors rather than padding every export indiscriminately.
+- Updated agent guidance and active development documentation to Oxfmt, including its default write behavior and the layout-only lint fix command. Historical validation entries retain the formatter used at the time.
+- Verified that spacing fixes and Oxfmt converge using function and arrow export examples; Oxfmt preserves the required blank lines and subsequent linting is clean.
+
+Validation: lint, formatting, strict typechecks, 46 existing tests, frozen-lockfile installation and peer dependency checks pass. Production builds and all 11 fresh-tarball integration checks pass. The eight local skills and their instruction links remain valid.

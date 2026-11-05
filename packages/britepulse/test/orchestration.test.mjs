@@ -55,6 +55,7 @@ test('successful collection finalizes original artifacts and returns its value',
   withTemporaryDirectory(async (directory) => {
     const result = await collectRun(new RunStore(directory), metadata, async (session) => {
       await session.writeArtifact('original.txt', 'source');
+
       return 42;
     });
     assert.equal(result.value, 42);

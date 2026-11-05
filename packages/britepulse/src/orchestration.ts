@@ -15,6 +15,7 @@ export async function withTemporaryDirectory<T>(
     await rm(directory, { recursive: true, force: true });
   }
 }
+
 export class RunExecutionError extends Error {
   constructor(
     readonly manifest: RunManifest,
@@ -27,8 +28,10 @@ export class RunExecutionError extends Error {
     this.name = 'RunExecutionError';
   }
 }
+
 function failureStatus(error: unknown, session: RunSession): 'cancelled' | 'partial' | 'failed' {
   if (error instanceof CommandInterruptedError && error.reason === 'cancelled') return 'cancelled';
+
   return session.manifest.artifacts.length ? 'partial' : 'failed';
 }
 
@@ -43,6 +46,7 @@ export async function collectRun<T>(
   try {
     const value = await operation(session);
     const manifest = await session.finish(completion.status, completion.diagnostics);
+
     return { value, manifest };
   } catch (error) {
     const status = failureStatus(error, session);

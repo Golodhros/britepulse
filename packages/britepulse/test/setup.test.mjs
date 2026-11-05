@@ -8,6 +8,7 @@ const project = async (directory, dependencies) => {
   const root = join(directory, 'app');
   await mkdir(root);
   await writeFile(join(root, 'package.json'), JSON.stringify({ devDependencies: dependencies }));
+
   return root;
 };
 test('Vite and Next.js detection is explicit about ambiguous projects', async () =>

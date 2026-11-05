@@ -9,6 +9,7 @@ const packageSchema = z.object({
   dependencies: z.record(z.string(), z.string()).optional(),
   devDependencies: z.record(z.string(), z.string()).optional(),
 });
+
 export async function detectProject(
   appRoot: string,
 ): Promise<{ adapters: Array<'vite' | 'next-webpack'> }> {
@@ -19,8 +20,10 @@ export async function detectProject(
   const adapters: Array<'vite' | 'next-webpack'> = [];
   if (dependencies.vite) adapters.push('vite');
   if (dependencies.next) adapters.push('next-webpack');
+
   return { adapters };
 }
+
 export interface InitOptions {
   configPath: string;
   appRoot: string;
@@ -29,6 +32,7 @@ export interface InitOptions {
   adapter?: 'vite' | 'next-webpack';
   runs?: number;
 }
+
 export async function initializeProject(
   options: InitOptions,
 ): Promise<{ configPath: string; config: z.infer<typeof configSchema> }> {
@@ -54,13 +58,16 @@ export async function initializeProject(
   await mkdir(dirname(configPath), { recursive: true });
   // Never overwrite a project configuration, even when two setup processes race.
   await writeFile(configPath, JSON.stringify(config, null, 2) + '\n', { flag: 'wx' });
+
   return { configPath, config };
 }
+
 export interface DoctorCheck {
   name: string;
   status: 'pass' | 'warning' | 'error';
   detail: string;
 }
+
 export async function inspectProject(
   config: ResolvedConfig,
 ): Promise<{ ok: boolean; config: ResolvedConfig; checks: DoctorCheck[] }> {
@@ -79,6 +86,7 @@ export async function inspectProject(
   await check('application', async () => {
     if (!(await stat(config.appRoot)).isDirectory())
       throw new Error('Application root is not a directory');
+
     return config.appRoot;
   });
   await check('framework', async () => {
@@ -87,6 +95,7 @@ export async function inspectProject(
       throw new Error(
         `Configured adapter ${config.bundle.adapter} does not match the application dependencies`,
       );
+
     return config.bundle.adapter;
   });
   await check('installed-tool', async () => {
@@ -103,12 +112,14 @@ export async function inspectProject(
         detail: `${name} ${pkg.version} is not the fixture-validated version ${validated}; integration compatibility is unverified`,
       });
     }
+
     return `${name} ${pkg.version}`;
   });
   if (config.synthetic.authHook)
     await check('auth-hook', async () => {
       if (!(await stat(config.synthetic.authHook!)).isFile())
         throw new Error('Authentication hook is not a file');
+
       return config.synthetic.authHook!;
     });
   await check('local-storage', async () => {
@@ -118,6 +129,7 @@ export async function inspectProject(
         const info = await stat(candidate);
         if (!info.isDirectory()) throw new Error('Storage parent is not a directory');
         await access(candidate, constants.W_OK);
+
         return config.outputDir;
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== 'ENOENT' || dirname(candidate) === candidate)
@@ -126,6 +138,8 @@ export async function inspectProject(
       }
     }
   });
+
   return { ok: checks.every((item) => item.status !== 'error'), config, checks };
 }
+
 export { loadConfig };

@@ -1,8 +1,10 @@
 'use client';
 import { useState } from 'react';
 import clsx from 'clsx';
+
 export default function Shared() {
   const [message, setMessage] = useState('Ready');
+
   return (
     <section className={clsx('fixture', { ready: message === 'Ready' })}>
       <h1>BritePulse compatibility fixture</h1>

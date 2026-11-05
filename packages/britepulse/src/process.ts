@@ -18,6 +18,7 @@ export class CommandInterruptedError extends Error {
     this.name = 'CommandInterruptedError';
   }
 }
+
 /** Shell-free asynchronous command execution with bounded termination and streaming output. */
 export async function runCommand(
   command: readonly string[],
@@ -33,6 +34,7 @@ export async function runCommand(
   )
     throw new Error('Command timeout must be a positive integer');
   if (options.signal?.aborted) throw new CommandInterruptedError('cancelled');
+
   return new Promise((resolve, reject) => {
     const child = spawn(executable, args, {
       cwd: options.cwd,

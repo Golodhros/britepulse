@@ -16,6 +16,7 @@ export const relativeArtifactPath = z
       value.split('/').every((part) => part !== '..' && part !== '.' && part !== ''),
     'Expected a relative artifact path without traversal',
   );
+
 export function parseValidated<T>(schema: z.ZodType<T>, input: unknown, label: string): T {
   const result = schema.safeParse(input);
   if (!result.success) {
@@ -24,5 +25,6 @@ export function parseValidated<T>(schema: z.ZodType<T>, input: unknown, label: s
       .join('; ');
     throw new Error(`${label}: ${issues}`);
   }
+
   return result.data;
 }

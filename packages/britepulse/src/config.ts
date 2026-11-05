@@ -69,6 +69,7 @@ export interface ResolvedConfig extends ProjectConfig {
 
 function compareKeys(a: string, b: string): number {
   if (a === b) return 0;
+
   return a < b ? -1 : 1;
 }
 
@@ -81,6 +82,7 @@ function stableJSON(value: unknown): string {
       .map(([key, child]) => `${JSON.stringify(key)}:${stableJSON(child)}`)
       .join(',')}}`;
   }
+
   return JSON.stringify(value);
 }
 
@@ -137,6 +139,7 @@ export function resolveConfig(
       }),
     )
     .digest('hex');
+
   return {
     ...normalized,
     configPath: configPath === null ? null : resolve(cwd, configPath),
@@ -159,5 +162,6 @@ export async function loadConfig(
       { cause: error },
     );
   }
+
   return resolveConfig(project, overrides, absolute, cwd);
 }

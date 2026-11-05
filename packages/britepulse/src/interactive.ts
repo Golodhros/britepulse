@@ -5,12 +5,15 @@ import { httpUrl } from './validation.js';
 import { RunStore } from './store.js';
 import type { DoctorCheck } from './setup.js';
 import type { ResolvedConfig } from './config.js';
+
 function cancelled(value: unknown): value is symbol {
   if (!isCancel(value)) return false;
   cancel('Cancelled.');
   process.exitCode = 130;
+
   return true;
 }
+
 async function guidedSetup(): Promise<void> {
   const appRoot = await text({
     message: 'Application directory',
@@ -62,6 +65,7 @@ async function guidedSetup(): Promise<void> {
   log.success(`Saved ${result.configPath}`);
   outro('Run britepulse doctor to inspect the resolved project settings.');
 }
+
 function printCheck(check: DoctorCheck): void {
   const output = `${check.name}: ${check.detail}`;
   if (check.status === 'error') log.error(output);
@@ -100,5 +104,6 @@ export async function interactive(): Promise<void> {
   if (task === 'init') return guidedSetup();
   const config = await loadConfig();
   if (task === 'doctor') return showDoctor(config);
+
   return showHistory(config);
 }

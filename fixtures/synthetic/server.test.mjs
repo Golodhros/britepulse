@@ -15,6 +15,7 @@ const request = (url, headers = {}) => {
       },
     },
   );
+
   return { status, body };
 };
 test('private page rejects anonymous requests', () =>

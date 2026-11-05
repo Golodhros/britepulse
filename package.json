@@ -15,15 +15,16 @@
     "test:synthetic": "node fixtures/synthetic/probe.mjs",
     "test:package": "pnpm --filter @britepulse/integration run test:package",
     "lint": "eslint .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
     "test:integration": "pnpm --filter @britepulse/integration run test:integration"
   },
   "devDependencies": {
     "eslint": "10.14.0",
     "typescript-eslint": "8.72.1",
-    "prettier": "3.9.10",
     "@types/node": "26.6.5",
-    "eslint-plugin-sonarjs": "4.2.2"
+    "eslint-plugin-sonarjs": "4.2.2",
+    "oxfmt": "0.76.0",
+    "@stylistic/eslint-plugin": "5.10.0"
   }
 }

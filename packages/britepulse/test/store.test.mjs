@@ -12,6 +12,7 @@ const metadata = {
   toolVersions: {},
   git: null,
 };
+
 async function fixture(callback) {
   const directory = await mkdtemp(join(tmpdir(), 'britepulse-store-'));
   try {
@@ -20,6 +21,7 @@ async function fixture(callback) {
     await rm(directory, { recursive: true, force: true });
   }
 }
+
 test('concurrent runs with the same label have immutable unique identities', () =>
   fixture(async (store) => {
     const sessions = await Promise.all(Array.from({ length: 12 }, () => store.create(metadata)));

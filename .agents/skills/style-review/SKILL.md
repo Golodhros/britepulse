@@ -16,6 +16,6 @@ Review the aspects that affect understanding and consumer behavior:
 - Describe fixture experiments, sample dashboards and unavailable capabilities honestly. Do not promote a Zod schema, successful build or sample chart into a claim of implemented measurement, comparison or release support.
 - Dashboard labels keep product concepts clear; internal artifact paths and debug details should appear only when useful to the user. Comments explain a non-obvious invariant or upstream limit, rather than narrating syntax.
 
-ESLint/SonarJS and Prettier own mechanical rules; read `eslint.config.mjs` and `.prettierrc.json` rather than copying their settings here. Do not report formatting taste as a review finding. Keep the deliberate whole-Lodash candidate-fixture exception narrow.
+ESLint/SonarJS and Oxfmt own mechanical rules; read `eslint.config.mjs` and `.oxfmtrc.json` rather than copying their settings here. The configured spacing rule requires blank lines around function declarations/exports and before returns when another statement precedes them. Let ESLint enforce those gaps; do not report additional formatting taste as a review finding. Keep the deliberate whole-Lodash candidate-fixture exception narrow.
 
 For each finding, cite the contract, documented behavior or established neighboring convention, explain the ambiguity and propose a concrete edit. Distinguish stale documentation from faulty code. Call out consumer-visible renames as compatibility changes. If no supported issue exists, report a clean review.

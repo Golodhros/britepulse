@@ -3,6 +3,7 @@ import { parseBundleSnapshot } from './contracts.js';
 import type { ResolvedConfig } from './config.js';
 import { RunStore } from './store.js';
 import { collectRun } from './orchestration.js';
+
 export async function importBundle(
   config: ResolvedConfig,
   artifactPath: string,
@@ -42,5 +43,6 @@ export async function importBundle(
       diagnostics: source.completeness.diagnostics,
     },
   );
+
   return manifest;
 }

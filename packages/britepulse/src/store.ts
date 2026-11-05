@@ -60,6 +60,7 @@ async function artifactDestination(directory: string, name: string): Promise<str
     if (!info.isDirectory() || info.isSymbolicLink())
       throw new Error(`Artifact directory is not an ordinary directory: ${part}`);
   }
+
   return join(directory, ...parts);
 }
 
@@ -84,11 +85,13 @@ class RunSession {
       () => undefined,
       () => undefined,
     );
+
     return result;
   }
   writeArtifact(name: string, contents: string | Uint8Array): Promise<void> {
     if (this.#closing)
       return Promise.reject(new Error('Run has already been finalized or is closing'));
+
     return this.#enqueue(async () => {
       const destination = await artifactDestination(this.directory, name);
       const temporary = join(dirname(destination), `.artifact-${randomUUID()}.tmp`);
@@ -114,12 +117,14 @@ class RunSession {
     const serialized = JSON.stringify(value, null, 2);
     if (serialized === undefined)
       return Promise.reject(new Error('Artifact value is not JSON serializable'));
+
     return this.writeArtifact(name, serialized + '\n');
   }
   finish(status: FinishedStatus, diagnostics: string[] = []): Promise<RunManifest> {
     if (this.#closing)
       return Promise.reject(new Error('Run has already been finalized or is closing'));
     this.#closing = true;
+
     return this.#enqueue(async () => {
       if (status === 'complete' && this.#writeErrors.length)
         throw new Error('A run with failed artifact writes cannot be complete');
@@ -131,6 +136,7 @@ class RunSession {
       });
       await atomicManifest(this.directory, manifest);
       this.#manifest = manifest;
+
       return this.manifest;
     }).catch((error) => {
       this.#closing = false;
@@ -160,6 +166,7 @@ export class RunStore {
     const directory = join(runsDirectory, manifest.id);
     await mkdir(directory); // Exclusive: labels and timestamps never determine identity.
     await atomicManifest(directory, manifest);
+
     return new RunSession(directory, manifest);
   }
   async read(id: string): Promise<RunManifest> {
@@ -174,6 +181,7 @@ export class RunStore {
       throw new Error('Manifest is not an ordinary file');
     const manifest = parseRunManifest(JSON.parse(await readFile(manifestPath, 'utf8')));
     if (manifest.id !== runId) throw new Error('Manifest ID does not match its directory');
+
     return manifest;
   }
   async createComparison(input: Omit<Comparison, 'schemaVersion' | 'id'>): Promise<Comparison> {
@@ -187,6 +195,7 @@ export class RunStore {
     const directory = join(await realpath(join(this.directory, 'comparisons')), comparison.id);
     await mkdir(directory);
     await atomicJSON(directory, 'comparison.json', comparison);
+
     return comparison;
   }
   async discover(): Promise<{ runs: RunManifest[]; diagnostics: string[] }> {
@@ -210,6 +219,7 @@ export class RunStore {
     runs.sort(
       (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt) || a.id.localeCompare(b.id),
     );
+
     return { runs, diagnostics };
   }
 }

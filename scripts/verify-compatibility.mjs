@@ -64,5 +64,6 @@ export async function verifyFixture(fixture) {
   console.log(
     `${fixture}: verified baseline/candidate pair (+${variants.candidate.jsBytes - variants.baseline.jsBytes} emitted JS bytes)`,
   );
+
   return evidence;
 }

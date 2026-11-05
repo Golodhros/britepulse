@@ -191,6 +191,7 @@ const deltaSchema = z
   .refine((delta) => {
     if (delta.baseline === null || delta.candidate === null)
       return delta.absolute === null && delta.percent === null;
+
     return delta.baseline !== 0 || delta.percent === null;
   }, 'Missing measurements and zero baselines must not create fabricated deltas');
 export const comparisonSchema = z
@@ -237,9 +238,11 @@ export type MetricAggregate = z.infer<typeof metricAggregateSchema>;
 export type BundleSnapshot = z.infer<typeof bundleSnapshotSchema>;
 export type Comparison = z.infer<typeof comparisonSchema>;
 export type BudgetResult = z.infer<typeof budgetResultSchema>;
+
 export function parseRunManifest(input: unknown): RunManifest {
   return parseValidated(runManifestSchema, input, 'Invalid run manifest');
 }
+
 export function parseBundleSnapshot(input: unknown): BundleSnapshot {
   return parseValidated(bundleSnapshotSchema, input, 'Invalid bundle snapshot');
 }

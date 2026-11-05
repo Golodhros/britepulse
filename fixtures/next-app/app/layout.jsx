@@ -1,4 +1,5 @@
 import '../src/style.css';
+
 export default function Layout({ children }) {
   return (
     <html lang="en">

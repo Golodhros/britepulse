@@ -16,12 +16,15 @@ const measurement = {
 const integer = (name: string, value: string | undefined): number | undefined => {
   if (value === undefined) return undefined;
   if (!/^\d+$/.test(value)) throw new Error(`${name} must be a whole number`);
+
   return Number(value);
 };
+
 // Direct commands emit JSON; the Clack menu owns human-facing terminal presentation.
 function print(value: unknown): void {
   console.log(JSON.stringify(value, null, 2));
 }
+
 async function initialize(rest: string[]): Promise<void> {
   const { values } = parseArgs({
     args: rest,
@@ -38,6 +41,7 @@ async function initialize(rest: string[]): Promise<void> {
     console.log(
       'Usage: britepulse init --url <http(s) URL> [--url <URL>] [--app-root <path>] [--adapter vite|next-webpack] [--runs <count>] [--config <path>]',
     );
+
     return;
   }
   if (!values.url?.length)
@@ -74,6 +78,7 @@ async function analyze(rest: string[]): Promise<void> {
     console.log(
       'Usage: britepulse analyze --artifact <path> [--label <name>] [--target client|ssr] [--config <path>] [--json]',
     );
+
     return;
   }
   if (!values.artifact)
@@ -95,6 +100,7 @@ async function inspect(command: 'doctor' | 'history', rest: string[]): Promise<v
     console.log(
       `Usage: britepulse ${command} [--config <path>] [--environment <name>] [--runs <count>] [--retries <count>] [--timeout-ms <ms>] [--json]`,
     );
+
     return;
   }
   const config = await loadConfig(values.config, {

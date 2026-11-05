@@ -36,6 +36,7 @@ export function britepulse(options: BritePulseViteOptions = {}): Plugin {
     throw new Error('BritePulse artifact filename must be a single JSON filename');
   let config: ResolvedConfig;
   const writtenDirectories = new Set<string>();
+
   return {
     name: 'britepulse',
     apply: 'build',
@@ -70,4 +71,5 @@ export function britepulse(options: BritePulseViteOptions = {}): Plugin {
     },
   };
 }
+
 export default britepulse;

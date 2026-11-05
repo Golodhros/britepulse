@@ -1,5 +1,16 @@
 import tseslint from 'typescript-eslint';
 import sonarjs from 'eslint-plugin-sonarjs';
+import stylistic from '@stylistic/eslint-plugin';
+
+const functionStatements = [
+  'function',
+  { selector: 'ExportNamedDeclaration[declaration.type="FunctionDeclaration"]' },
+  { selector: 'ExportDefaultDeclaration[declaration.type="FunctionDeclaration"]' },
+  {
+    selector:
+      'ExportNamedDeclaration:has(VariableDeclaration > VariableDeclarator > :matches(ArrowFunctionExpression, FunctionExpression))',
+  },
+];
 export default tseslint.config(
   { ignores: ['**/node_modules/**', '**/dist/**', '**/.artifacts/**'] },
   ...tseslint.configs.recommended,
@@ -16,6 +27,15 @@ export default tseslint.config(
   },
   {
     files: ['**/*.{js,jsx,mjs,ts,tsx}'],
-    rules: { '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }] },
+    plugins: { '@stylistic': stylistic },
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@stylistic/padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: functionStatements, next: '*' },
+        { blankLine: 'always', prev: '*', next: functionStatements },
+        { blankLine: 'always', prev: '*', next: 'return' },
+      ],
+    },
   },
 );

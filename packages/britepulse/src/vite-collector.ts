@@ -35,6 +35,7 @@ async function emittedSizes(item: OutputItem, compression: boolean): Promise<Gra
     gzipAsync(source, { level: 9 }),
     brotliAsync(source, { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } }),
   ]);
+
   return {
     ...sizes,
     gzipBytes: compressedGzip.byteLength,
@@ -48,9 +49,11 @@ function emittedImports(
   diagnostics: string[],
 ): string[] {
   if (item.type !== 'chunk') return [];
+
   return item.imports.filter((id) => {
     if (Object.hasOwn(bundle, id)) return true;
     diagnostics.push(`External import excluded from emitted totals: ${id}`);
+
     return false;
   });
 }
@@ -97,6 +100,7 @@ function includeManifestRelationships(
     diagnostics.push(
       'Build manifest unavailable; entrypoint CSS and static asset relationships are incomplete',
     );
+
     return;
   }
   const manifest = parseValidated(
@@ -131,6 +135,7 @@ export async function collectViteBundle(
   }
   includeManifestRelationships(config, bundle, assets, diagnostics);
   includeCssDiagnostics(assets, diagnostics);
+
   return resolveBundleGraph(
     assets,
     entries,

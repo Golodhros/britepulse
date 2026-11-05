@@ -54,6 +54,7 @@ test('unresolved emitted references remain explicit unknowns', () => {
   assert.equal(snapshot.assets.find((asset) => asset.id === 'missing.mjs').kind, 'js');
   assert.equal(snapshot.completeness.status, 'partial');
 });
+
 async function fixture(directory) {
   await writeFile(
     join(directory, 'index.html'),
@@ -79,6 +80,7 @@ async function fixture(directory) {
     'import "./lazy.css";import {shared} from "./shared.js";export const value=shared+"baseline";',
   );
 }
+
 test('production builds preserve multiple entries, dynamic CSS, exact bytes, compression and history imports', async () =>
   withTemporaryDirectory(async (directory) => {
     await fixture(directory);

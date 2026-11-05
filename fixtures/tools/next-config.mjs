@@ -2,6 +2,7 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 const variant = process.env.BRITEPULSE_VARIANT ?? 'baseline';
 if (!['baseline', 'candidate'].includes(variant)) throw new Error('Invalid fixture variant');
+
 export function createNextConfig() {
   return {
     distDir: `.artifacts/${process.env.BRITEPULSE_BACKEND ?? 'webpack'}-${variant}`,
@@ -32,6 +33,7 @@ export function createNextConfig() {
             });
           },
         });
+
       return config;
     },
   };

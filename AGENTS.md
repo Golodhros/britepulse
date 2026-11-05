@@ -18,6 +18,8 @@ Complete one feature slice, review its correctness and architecture, address fin
 
 Do not infer release readiness from passing unit tests. Changes to runtime exports, dependencies, the CLI, build adapters or report packaging need installed-consumer evidence. Read [the implementation ledger](docs/implementation-progress.md) for completed work and review decisions; check actual code before treating an entry as current status.
 
+Formatting uses Oxfmt. ESLint enforces a blank line between function declarations/exports and before return statements when another statement precedes them. Keep those gaps when refactoring.
+
 ## Local skills
 
 Use the relevant workflow rather than loading every skill:
@@ -33,4 +35,4 @@ Use the relevant workflow rather than loading every skill:
 | Extend installed-consumer coverage            | [create-integration-test](.agents/skills/create-integration-test/SKILL.md) |
 | Develop a dashboard view                      | [create-report-view](.agents/skills/create-report-view/SKILL.md)           |
 
-Review scope is defined in [.agents/references/review-scope.md](.agents/references/review-scope.md). Reuse existing test/build scripts; there is no Storybook, Vitest, Stylelint, Oxfmt or Changesets workflow in this repository.
+Review scope is defined in [.agents/references/review-scope.md](.agents/references/review-scope.md). Reuse existing test/build scripts; there is no Storybook, Vitest, Stylelint or Changesets workflow in this repository.

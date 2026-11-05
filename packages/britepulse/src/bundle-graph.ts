@@ -3,9 +3,11 @@ export type GraphAsset = BundleSnapshot['assets'][number] & {
   imports: string[];
   dynamicImports: string[];
 };
+
 export function assetKind(id: string): GraphAsset['kind'] {
   if (id.endsWith('.js') || id.endsWith('.mjs')) return 'js';
   if (id.endsWith('.css')) return 'css';
+
   return 'other';
 }
 
@@ -57,12 +59,14 @@ export function resolveBundleGraph(
       if (!asset) throw new Error(`Entrypoint references missing asset ${id}`);
       queue.push(...asset.imports, ...(dynamic ? asset.dynamicImports : []));
     }
+
     return visited;
   };
   const entrypoints = Object.fromEntries(
     Object.entries(entries).map(([name, entry]) => {
       const initial = closure([entry], false);
       const reachable = closure([entry], true);
+
       return [
         name,
         {
@@ -72,6 +76,7 @@ export function resolveBundleGraph(
       ];
     }),
   );
+
   return parseBundleSnapshot({
     schemaVersion: 1,
     adapter: 'vite',

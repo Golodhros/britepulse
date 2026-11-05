@@ -1,6 +1,7 @@
 // Adapted from shadcn/ui Card (MIT): https://ui.shadcn.com/docs/components/card
 import type { ComponentProps } from 'react';
 import { cn } from '@/lib/utils';
+
 export function Card({ className, ...props }: ComponentProps<'div'>) {
   return (
     <div
@@ -10,6 +11,7 @@ export function Card({ className, ...props }: ComponentProps<'div'>) {
     />
   );
 }
+
 export function CardHeader({ className, ...props }: ComponentProps<'div'>) {
   return (
     <div
@@ -19,6 +21,7 @@ export function CardHeader({ className, ...props }: ComponentProps<'div'>) {
     />
   );
 }
+
 export function CardTitle({ className, ...props }: ComponentProps<'h2'>) {
   return (
     <h2
@@ -28,6 +31,7 @@ export function CardTitle({ className, ...props }: ComponentProps<'h2'>) {
     />
   );
 }
+
 export function CardDescription({ className, ...props }: ComponentProps<'p'>) {
   return (
     <p
@@ -37,6 +41,7 @@ export function CardDescription({ className, ...props }: ComponentProps<'p'>) {
     />
   );
 }
+
 export function CardContent({ className, ...props }: ComponentProps<'div'>) {
   return <div data-slot="card-content" className={cn('p-6 pt-0', className)} {...props} />;
 }
