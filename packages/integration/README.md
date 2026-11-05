@@ -26,6 +26,7 @@ The generated consumers, lockfiles, build outputs, local history and tarballs st
 - Verify declared runtime/type export files, license, README and referenced prebuilt report JS/CSS files exist. Ensure fixtures, source, tests and local run data do not ship.
 - Execute the installed bin's help, version, unknown-command and redirected-input paths. Block optional dependency imports during help/version and core export imports.
 - Compile a strict NodeNext TypeScript consumer using root, configuration and Vite exports, including expected type errors for invalid targets, units and plugin options.
+- Run the installed experimental `measure` command against an explicitly fake engine in a separate temporary application, checking original reports, sample values, partial exit status and history. This tests packaging/orchestration without claiming live browser compatibility.
 - Run installed `init`, `doctor`, `analyze` and `history` commands with JSON output. Existing configuration cannot be overwritten, and command overrides preserve project settings.
 - Build baseline and candidate React applications with shared code, static CSS and lazy CSS. The candidate adds lodash to a lazy import. Verify an emitted JS increase greater than 50 KB, exact asset sizes against disk, compression estimates, and disjoint initial/asynchronous asset sets.
 - Import both builds with the same label and verify distinct run IDs, preserved original JSON, normalized snapshots and complete history.

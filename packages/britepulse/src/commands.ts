@@ -94,6 +94,50 @@ async function analyze(rest: string[]): Promise<void> {
   );
 }
 
+async function measure(rest: string[]): Promise<void> {
+  const { values } = parseArgs({
+    args: rest,
+    options: {
+      ...shared,
+      ...measurement,
+      experimental: { type: 'boolean' },
+      label: { type: 'string' },
+    },
+  });
+  if (values.help) {
+    console.log(
+      'Usage: britepulse measure --experimental [--label <name>] [--config <path>] [--environment <name>] [--runs <count>] [--retries <count>] [--timeout-ms <ms>] [--json]',
+    );
+
+    return;
+  }
+  if (!values.experimental)
+    throw new Error('measure requires --experimental; live browser compatibility is not validated');
+  const config = await loadConfig(values.config, {
+    environment: values.environment,
+    synthetic: {
+      runs: integer('runs', values.runs),
+      retries: integer('retries', values.retries),
+      timeoutMs: integer('timeout-ms', values['timeout-ms']),
+    },
+  });
+  const controller = new AbortController();
+  const cancel = () => controller.abort();
+  process.once('SIGINT', cancel);
+  process.once('SIGTERM', cancel);
+  try {
+    const { measureProject } = await import('./measure.js');
+    const manifest = await measureProject(config, values.label ?? 'synthetic', {
+      signal: controller.signal,
+    });
+    print(manifest);
+    if (manifest.status !== 'complete') process.exitCode = 1;
+  } finally {
+    process.removeListener('SIGINT', cancel);
+    process.removeListener('SIGTERM', cancel);
+  }
+}
+
 async function inspect(command: 'doctor' | 'history', rest: string[]): Promise<void> {
   const { values } = parseArgs({ args: rest, options: { ...shared, ...measurement } });
   if (values.help) {
@@ -125,6 +169,8 @@ export async function execute(args: string[]): Promise<void> {
   switch (command) {
     case 'init':
       return initialize(rest);
+    case 'measure':
+      return measure(rest);
     case 'analyze':
       return analyze(rest);
     case 'doctor':

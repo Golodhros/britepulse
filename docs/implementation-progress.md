@@ -197,3 +197,19 @@ Quality review and cleanup:
 - Kept report parsing separate from browser startup, profile verification, storage and original-artifact persistence. Added six focused normalization cases and composition coverage through scheduling and aggregation. Fixed a misplaced expected-error directive found by the first installed type-check run.
 
 Validation: lint, strict typechecks, formatting, core/fixture tests and fresh installed-consumer runtime/declaration/workflow checks pass. Production packaging runs through prepack. Live Lighthouse execution, authentication, cache semantics and browser cleanup remain unvalidated; this milestone adds report normalization, not a CLI collection command.
+
+## Iteration 14 Experimental Lighthouse collector
+
+Added `measure --experimental` and the programmatic `measureProject` API. The collector resolves application-installed Lighthouse 13.6.0 and chrome-launcher 1.2.2, launches an isolated worker and Chrome profile for each attempt, applies the mobile/default or desktop preset, enforces browser-attempt timeouts, and persists original reports, normalized samples and per-URL aggregates. Cold-cache measurements without authentication hooks are the explicit experimental scope; unsupported profiles fail before history creation.
+
+Quality review and cleanup:
+
+- Kept browser imports in the worker and out of CLI/core startup. No Lighthouse shipping dependency was added while the live engine comparison remains blocked.
+- Connected existing scheduling, aggregation and immutable storage instead of introducing new retry math or report rendering. A partial measurement exits 1 with its manifest; fatal errors retain a terminal history entry when collection has started.
+- Added fatal adapter errors so persistence, normalization and cleanup failures stop rather than consume navigation retries. Improved propagated diagnostics and retained malformed original reports for inspection.
+- Accounted for Chrome launcher's separate process group on cancellation/timeouts. Parent cleanup uses its PID file, terminates the group and checks the browser PID for exit. A negative-PID existence probe produced `EPERM` here; checking the browser PID fixed that verification while retaining group termination.
+- Preserved available reports even when a worker times out during cleanup after producing JSON/HTML. Added regression coverage for that case, cancellation, raw-report write failures, malformed data, missing engines, warmups, device settings, retry exhaustion and partial metrics.
+- Added installed-CLI coverage using explicitly fake engine packages in a separate temporary application. The detached browser stub is a Node process; these tests establish orchestration and packaging, not browser emulation/cache correctness.
+- Added a dedicated real collector probe and updated user-facing commands, setup, storage layout, exit statuses and experimental limits.
+
+Validation: 74 core/fixture tests, lint, strict typechecks and formatting pass. Fresh installed-consumer checks exercise the packaged worker, command, runtime exports and public declarations, alongside existing Vite workflows and production prepack builds. The real engine comparison and real collector probe were both attempted and failed at `listen EPERM` on loopback before measurement. Live Lighthouse/Chrome execution, authentication and actual cache/device semantics remain unverified; the feature stays explicitly experimental.

@@ -32,3 +32,9 @@ BundleStats 4.23.1 also detects the dependency increase and package/module count
 Vite's documented [plugin hooks](https://vite.dev/guide/api-plugin.html), [Next.js CLI](https://nextjs.org/docs/app/api-reference/cli/next), and [BundleStats](https://github.com/relative-ci/bundle-stats) describe the upstream interfaces. Runtime evidence, rather than untested version ranges, governs initial support.
 
 The workspace gives `lighthouse@13.6.0` its own proxy-agent 8.0.1 dependency for its browser downloader through a package extension. This keeps LHCI's proxy-agent 6 from satisfying the downloader's incompatible optional peer; it does not change LHCI's own proxy implementation.
+
+## Experimental collector evidence
+
+The `measure --experimental` command resolves application-installed Lighthouse 13.6.0 and chrome-launcher 1.2.2. Worker/storage tests use explicitly fake engines and detached Node processes to check profiles passed to the adapter, retained reports, partial results, timeouts and cancellation. These establish orchestration behavior, not browser compatibility.
+
+`pnpm test:synthetic:collector` builds the core and exercises the real collector against three public fixture navigations, checking original JSON/HTML reports and per-metric aggregates. Both this probe and the engine comparison were attempted on November 5, 2026 and stopped at `listen EPERM` on loopback before browser measurement. Live device/cache semantics, authentication and actual Chrome cleanup therefore remain unverified. Warm cache and authentication hooks are rejected by the experimental collector.

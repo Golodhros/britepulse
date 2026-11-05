@@ -9,11 +9,12 @@ Usage: britepulse [command]
   --version, -v   Show version
   init            Create configuration without overwriting an existing file
   analyze         Import a production Vite bundle artifact into local history
+  measure         Experimental cold-cache Lighthouse collection (requires --experimental)
   doctor          Validate the project and resolved measurement profile
   history         List local runs
   (no command)    Open the interactive menu
 
-Lighthouse collection and report serving are not implemented yet.
+Live browser compatibility is unvalidated. Report serving is not implemented yet.
 `;
 try {
   const args = process.argv.slice(2);

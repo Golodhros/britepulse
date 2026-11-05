@@ -9,7 +9,11 @@ export { collectRun, withTemporaryDirectory, RunExecutionError } from './orchest
 export { importBundle } from './analyze.js';
 export { aggregateSyntheticSamples } from './synthetic-aggregation.js';
 export type { SyntheticAggregationInput, SyntheticAggregation } from './synthetic-aggregation.js';
-export { scheduleSyntheticSamples, SyntheticScheduleError } from './synthetic-scheduler.js';
+export {
+  scheduleSyntheticSamples,
+  SyntheticScheduleError,
+  SyntheticRunnerFatalError,
+} from './synthetic-scheduler.js';
 export type {
   SyntheticAttempt,
   SyntheticRunner,
@@ -18,3 +22,4 @@ export type {
 } from './synthetic-scheduler.js';
 export { normalizeLighthouseReport, lighthouseMetricDefinitions } from './lighthouse-report.js';
 export type { LighthouseReportContext, NormalizedLighthouseReport } from './lighthouse-report.js';
+export { measureProject } from './measure.js';

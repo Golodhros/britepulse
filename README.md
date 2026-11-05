@@ -77,11 +77,11 @@ See [Vite integration](docs/vite-integration.md) for tested versions, CSS and dy
 
 ## Compatibility
 
-See [tested paths and limitations](docs/compatibility.md), [engine decisions](docs/decisions/measurement-engines.md), and [iteration reviews](docs/implementation-progress.md). Run `pnpm test:compatibility` for production fixture pairs and `pnpm test:native` for native Next.js analysis. The live synthetic probe (`pnpm test:synthetic`) requires Chrome and a loopback port.
+See [tested paths and limitations](docs/compatibility.md), [engine decisions](docs/decisions/measurement-engines.md), and [iteration reviews](docs/implementation-progress.md). Run `pnpm test:compatibility` for production fixture pairs and `pnpm test:native` for native Next.js analysis. The engine comparison (`pnpm test:synthetic`) and collector probe (`pnpm test:synthetic:collector`) require Chrome and a loopback port. See [experimental collection](docs/configuration.md#experimental-lighthouse-collection) for setup and limits.
 
 ## Status and next work
 
-The workspace includes a sample dashboard, a compiled interactive CLI, compatibility fixtures, and prebuilt dashboard assets in the CLI tarball. `--help` and `--version` run without loading Clack, React, charts, or a browser. It includes configuration validation and programmatic immutable local history. It imports production Vite bundle artifacts into local history. Lighthouse collection, Next.js import, computed comparisons, budgets, and real-data report export remain in progress. Sample values are not performance findings.
+The workspace includes a sample dashboard, a compiled interactive CLI, compatibility fixtures, and prebuilt dashboard assets in the CLI tarball. `--help` and `--version` run without loading Clack, React, charts, or a browser. It includes configuration validation and programmatic immutable local history. It imports production Vite bundle artifacts into local history. An experimental `measure --experimental` command collects cold-cache Lighthouse reports using application-installed Lighthouse 13.6.0 and chrome-launcher 1.2.2 on macOS/Linux; live browser compatibility is unvalidated. Warm-cache collection, authentication hooks, Next.js import, computed comparisons, budgets, and real-data report export remain in progress. Sample values are not performance findings.
 
 Next: finish runner validation and median aggregation, add automated build invocation and validated Next.js import, and connect comparisons and real data to the dashboard before budgets and release validation. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
 

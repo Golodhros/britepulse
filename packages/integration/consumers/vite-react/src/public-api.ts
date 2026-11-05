@@ -61,3 +61,7 @@ const lighthouseNormalizer: typeof normalizeLighthouseReport = normalizeLighthou
 // @ts-expect-error Artifact references cannot be numeric paths.
 const invalidReportContext: LighthouseReportContext['reports']['json'] = 1;
 export { reportContext, layoutShiftUnit, lighthouseNormalizer, invalidReportContext };
+
+import { measureProject } from 'britepulse';
+const experimentalCollector: typeof measureProject = measureProject;
+export { experimentalCollector };

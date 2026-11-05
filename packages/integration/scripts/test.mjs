@@ -11,5 +11,10 @@ for (const script of ['pack.mjs', 'install-consumers.mjs']) {
 }
 const tests = packageOnly
   ? ['tests/tarball.test.mjs']
-  : ['tests/tarball.test.mjs', 'tests/types.test.mjs', 'tests/workflow.test.mjs'];
+  : [
+      'tests/tarball.test.mjs',
+      'tests/types.test.mjs',
+      'tests/workflow.test.mjs',
+      'tests/measure.test.mjs',
+    ];
 await run(process.execPath, ['--test', ...tests], { cwd: integrationRoot });

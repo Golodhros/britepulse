@@ -204,3 +204,21 @@ test('persistence failure retains the unpersisted sample and prevents the next a
   );
   assert.equal(calls, 1);
 });
+
+test('fatal adapter failures stop without creating retried navigation failures', async () => {
+  const { SyntheticRunnerFatalError } = await import('../dist/index.js');
+  let calls = 0;
+  await assert.rejects(
+    scheduleSyntheticSamples({ url, runs: 3, retries: 2 }, async () => {
+      calls++;
+      throw new SyntheticRunnerFatalError('Persistence failed');
+    }),
+    (error) => {
+      assert.equal(error.samples.length, 0);
+      assert(error.cause instanceof SyntheticRunnerFatalError);
+
+      return true;
+    },
+  );
+  assert.equal(calls, 1);
+});

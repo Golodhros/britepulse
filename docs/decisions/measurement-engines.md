@@ -12,7 +12,7 @@ Start Next.js collection with imported client Webpack stats. Pages Router route 
 
 Prefer the direct Lighthouse API behind a replaceable runner adapter, subject to the live comparison passing. LHCI 0.16.0 and direct Lighthouse 13.6.0 are pinned in a fixture, using the same Lighthouse engine. The probe compares three reports per public/authenticated URL and retains original JSON and HTML. Live execution is blocked by loopback permissions in this environment. Cancellation, retry scheduling and per-metric median aggregation must be BritePulse-owned behavior regardless of engine choice; a runner's built-in summary must not silently replace those contracts.
 
-Do not introduce a shipping Lighthouse dependency or claim authenticated measurement support until the live probe passes.
+Do not introduce a shipping Lighthouse dependency or claim authenticated measurement support until the live probe passes. An explicitly experimental collector now resolves application-installed Lighthouse 13.6.0 and chrome-launcher 1.2.2 behind its worker adapter; it is limited to cold-cache collection without authentication hooks and does not settle the live engine comparison.
 
 ## Authentication and support scope
 

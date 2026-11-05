@@ -13,6 +13,7 @@
     "test:compatibility": "node scripts/compatibility.mjs",
     "test:native": "node scripts/probe-next-native.mjs",
     "test:synthetic": "node fixtures/synthetic/probe.mjs",
+    "test:synthetic:collector": "node scripts/probe-synthetic-collector.mjs",
     "test:package": "pnpm --filter @britepulse/integration run test:package",
     "lint": "eslint .",
     "format": "oxfmt --write .",

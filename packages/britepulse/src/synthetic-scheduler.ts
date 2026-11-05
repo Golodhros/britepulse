@@ -28,6 +28,14 @@ export interface SyntheticScheduleOptions {
   onSample?: (sample: SyntheticSample) => Promise<void>;
 }
 
+/** Adapter contract, persistence or cleanup failure: stop rather than retry navigation. */
+export class SyntheticRunnerFatalError extends Error {
+  constructor(message: string, cause?: unknown) {
+    super(message, { cause });
+    this.name = 'SyntheticRunnerFatalError';
+  }
+}
+
 export class SyntheticScheduleError extends Error {
   readonly samples: SyntheticSample[];
 
@@ -58,6 +66,7 @@ export async function scheduleSyntheticSamples(
     try {
       outcome = await runner({ url: settings.url, attempt: samples.length + 1, warmup, signal });
     } catch (error) {
+      if (error instanceof SyntheticRunnerFatalError) throw error;
       checkCancellation(signal, samples);
       outcome = {
         status: 'failed',
@@ -94,7 +103,11 @@ export async function scheduleSyntheticSamples(
     }
   } catch (error) {
     if (error instanceof SyntheticScheduleError) throw error;
-    throw new SyntheticScheduleError('Synthetic scheduling stopped', samples, error);
+    throw new SyntheticScheduleError(
+      `Synthetic scheduling stopped: ${error instanceof Error ? error.message : String(error)}`,
+      samples,
+      error,
+    );
   }
 
   return samples;
