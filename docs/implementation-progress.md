@@ -155,3 +155,17 @@ Review findings and cleanup:
 - Verified that spacing fixes and Oxfmt converge using function and arrow export examples; Oxfmt preserves the required blank lines and subsequent linting is clean.
 
 Validation: lint, formatting, strict typechecks, 46 existing tests, frozen-lockfile installation and peer dependency checks pass. Production builds and all 11 fresh-tarball integration checks pass. The eight local skills and their instruction links remain valid.
+
+## Iteration 11 Synthetic aggregation foundation
+
+Added the public `aggregateSyntheticSamples` API for a single URL and measurement profile. It computes independent per-metric medians and median absolute deviation, excludes warmups and failed attempts from values, counts measured retries, and preserves missing values with partial diagnostics. It rejects mixed URLs, duplicate sample identities/attempt numbers, excess successes and incompatible units.
+
+Quality review and cleanup:
+
+- Kept aggregation math independent of browser engines, process scheduling, storage and presentation; reused existing input and aggregate validators without changing persisted schemas.
+- Split sample identity validation and metric aggregation into focused functions after the initial implementation exceeded the SonarJS complexity limit.
+- Used a non-mutating numeric sort compatible with the existing TypeScript target and an overflow-safe midpoint for nonnegative measurements.
+- Added cases for independent metric sample counts, fractional scores, missing metrics, zero values, failed retries, warmups, invalid inputs and non-mutation. Installed consumers exercise runtime exports and compile the public input/output types.
+- Documented the caller's responsibility to separate profiles and schedule retry slots. Aggregation completeness does not imply budget eligibility; fewer than three valid samples remain insufficient to pass budgets.
+
+Validation: lint, strict typechecks, formatting, the existing core suite plus five aggregation cases, and all 12 fresh-tarball integration checks pass. Production report/core packaging runs through prepack. This milestone does not add live Lighthouse execution, scheduling or budget evaluation; the live browser probe remains unverified because of the previously observed loopback restriction.

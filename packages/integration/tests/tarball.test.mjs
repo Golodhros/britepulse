@@ -88,3 +88,22 @@ export async function resolve(specifier, context, next) {
     load: 'function',
   });
 });
+
+test('installed aggregation API retains unknown values without browser tooling', () => {
+  const result = JSON.parse(
+    success(
+      command('cli', process.execPath, [
+        '--input-type=module',
+        '--eval',
+        `import { aggregateSyntheticSamples } from 'britepulse';
+console.log(JSON.stringify(aggregateSyntheticSamples({
+  url: 'https://example.com/', expectedSamples: 3,
+  metrics: { lcp: { unit: 'ms', direction: 'lower' } }, samples: [],
+})));`,
+      ]),
+    ),
+  );
+  assert.equal(result.status, 'partial');
+  assert.equal(result.metrics.lcp.median, null);
+  assert.equal(result.metrics.lcp.validSamples, 0);
+});

@@ -7,3 +7,5 @@ export { runCommand, CommandInterruptedError } from './process.js';
 export type { CommandOptions, CommandResult } from './process.js';
 export { collectRun, withTemporaryDirectory, RunExecutionError } from './orchestration.js';
 export { importBundle } from './analyze.js';
+export { aggregateSyntheticSamples } from './synthetic-aggregation.js';
+export type { SyntheticAggregationInput, SyntheticAggregation } from './synthetic-aggregation.js';

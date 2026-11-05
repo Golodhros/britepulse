@@ -44,4 +44,12 @@ Runtime Zod schemas and inferred TypeScript types share one definition in `contr
 - `Comparison` preserves nullable measurements and signed differences. Missing measurements cannot acquire deltas; zero baselines cannot acquire percentages; incompatible profiles cannot acquire numeric deltas.
 - `BudgetResult` cannot report a pass or violation for an unknown measurement. It records an error with a reason instead.
 
-These contracts validate serialization boundaries. Runner scheduling, median calculation, comparison calculations and budget evaluation remain separate implementation steps. All report artifact references are relative paths without traversal; local history storage will validate them again at the filesystem boundary.
+These contracts validate serialization boundaries. Per-metric aggregation is available through `aggregateSyntheticSamples`; runner scheduling, comparison calculations and budget evaluation remain separate implementation steps. All report artifact references are relative paths without traversal; local history storage will validate them again at the filesystem boundary.
+
+## Synthetic aggregation API
+
+`aggregateSyntheticSamples({ url, expectedSamples, metrics, samples })` aggregates one URL and measurement profile. The metric definitions specify each unit and improvement direction. Callers must keep profiles separate; sample records alone do not contain the profile fingerprint.
+
+The function excludes warmups and failed attempts from values, retains failed measured attempts in `attemptedSamples`, and computes unrounded per-metric medians and median absolute deviation. Missing or null metrics stay unknown; missing values never become zero. All requested successful samples and all requested per-metric values are required for `complete` status. Partial aggregates retain available values and diagnostics for inspection. Duplicate IDs/attempt numbers, mixed URLs, excess successful samples and incompatible metric units are rejected.
+
+Attempts are numbered uniquely across warmups and measurements for this URL. Retry scheduling must replace failed measured attempts only; the aggregation API does not schedule or validate slot ownership. A complete one- or two-sample aggregate is still insufficient to pass a budget: budget evaluation must require at least three valid samples per metric as well as completeness. This API does not implement budget evaluation or live Lighthouse collection.

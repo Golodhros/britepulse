@@ -1,4 +1,10 @@
-import { resolveConfig, type BundleSnapshot, type MetricAggregate } from 'britepulse';
+import {
+  aggregateSyntheticSamples,
+  type SyntheticAggregationInput,
+  resolveConfig,
+  type BundleSnapshot,
+  type MetricAggregate,
+} from 'britepulse';
 import { loadConfig } from 'britepulse/config';
 import { britepulse } from 'britepulse/vite';
 const config = resolveConfig({
@@ -15,3 +21,15 @@ const invalidUnit: MetricAggregate['unit'] = 'kilobytes';
 // @ts-expect-error Integration options must match the published declaration.
 britepulse({ missingOption: true });
 export { count, target, unit, invalidTarget, invalidUnit, loadConfig };
+
+const aggregationInput: SyntheticAggregationInput = {
+  url: 'https://example.com/',
+  expectedSamples: 3,
+  metrics: { lcp: { unit: 'ms', direction: 'lower' } },
+  samples: [],
+};
+const aggregationStatus: 'complete' | 'partial' =
+  aggregateSyntheticSamples(aggregationInput).status;
+// @ts-expect-error Metric directions must use the public measurement vocabulary.
+const invalidDirection: SyntheticAggregationInput['metrics'][string]['direction'] = 'faster';
+export { aggregationStatus, invalidDirection };
