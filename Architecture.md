@@ -86,10 +86,14 @@ Each terminal state has a completion timestamp. A killed process that never fina
 
 ## Dependency and release boundary
 
-The CLI package contains compiled ESM, declarations and prebuilt dashboard assets. Vite is an optional peer used through `britepulse/vite`. Lighthouse and chrome-launcher are resolved from the application only for explicit experimental collection. React, Shadcn and chart dependencies belong to the report build rather than CLI startup.
+The CLI package contains compiled ESM, declarations, changelog and prebuilt dashboard assets. Vite is an optional peer used through `britepulse/vite`. Lighthouse and chrome-launcher are resolved from the application only for explicit experimental collection. React, Shadcn and chart dependencies belong to the report build rather than CLI startup.
 
 Tarball consumers verify this boundary independently of workspace source links. See [consumer integration tests](packages/integration/README.md). Passing those checks establishes packaging and controlled workflows; it does not establish live browser collection or real-data dashboard rendering.
 
 ## Measurement boundaries
 
 Build assets, framework routes, browser navigation metrics and field measurements describe different things. The [measurement model](docs/measurement-model.md) explains why BritePulse retains nulls, per-metric counts, explicit capabilities and original artifacts instead of presenting incomplete evidence as a complete comparison.
+
+## Release flow
+
+Changesets manages the CLI version and changelog, following Britecharts' release model. Pushes to main can create version PRs; publication is a separate manual workflow. Verification installs the production tarball into isolated consumers and records its integrity and source commit. The publisher uses that same tarball, verifies registry state and reports the beta tag to Changesets for GitHub release creation. Report/integration/fixture packages remain private. See [release reference](docs/release-reference.md).

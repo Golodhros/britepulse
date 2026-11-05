@@ -229,3 +229,20 @@ Added `analyze --next-build`, `importNextPagesBundle` and pure `normalizeNextPag
 Quality review: rejected App Router/mixed-router, SSR, unsupported versions, unsafe asset paths, duplicate assets and mutually exclusive CLI inputs before history creation. Kept modules/compression unavailable and every snapshot partial because asynchronous route attribution is not established. Reused the cleared perf-tools shared-shell/deduplication approach without copying its zero-size or ambiguous-basename fallbacks. Kept importer normalization independent of Next.js runtime dependencies and updated Diátaxis reference/recipes/architecture to match the implemented boundary.
 
 Validation: 78 core/fixture tests, all 16 fresh-tarball integration checks, lint, strict typechecks, formatting and production packaging pass. `pnpm test:next-pages` rebuilds and imports real baseline/candidate fixtures, checks emitted sizes against disk and preserves the known +70,017 emitted JS-byte delta. Route-specific asynchronous loading and concrete-URL template resolution remain unavailable rather than inferred from shared Webpack chunk relations.
+
+## Iteration 17 Beta release preparation and synthetic-only profiles
+
+Prepared `0.1.0-beta.0` using Changesets 3.0.3, following Britecharts' version/changelog model. Only the consumer-facing CLI package is public; its prebuilt report, core APIs and Vite subpath ship together. Added metadata, a changelog, version-PR automation and a separate manual publish workflow with explicit beta tag, provenance, verified tarball reuse and integrity-aware retry handling. No publication, push, secret configuration or GitHub workflow dispatch was performed.
+
+Added synthetic-only `bundle.adapter: none` / generic run identities after inspecting the user's Expo portfolios. Unknown build frameworks can initialize a URL-measurement profile without being mislabeled as Vite or Next.js. Doctor checks the pinned Lighthouse/launcher for that profile. This does not claim Expo/Metro bundle attribution.
+
+Quality review and fixes:
+
+- Replaced a hard-coded 0.0.0 CLI test with installed manifest version verification.
+- Guarded actual publication with a clean checkout, exact source commit, exact verified archive, beta-only metadata and a receipt that was not generated from dirty source. Registry failures other than explicit 404 stop rather than imply a missing version.
+- Kept authentication scoped to the manual publish job, used npm for the packed artifact rather than copying Britecharts' pnpm auth interpolation, and retained local non-publishing release plans.
+- Added release-policy tests, synthetic-only setup/collection coverage and installed generic-profile checks. Fixed the latter fixture to explicitly select the profile rather than relying on the Vite default.
+- Retained bounded browser stderr/log evidence for failed attempts. Actual portfolio smoke testing produced a timeout and no valid measurements; HTTP availability checks are not performance results.
+- Updated architecture-review guidance to the now-existing release workflow. Formatter and local links pass; the bundled Python skill validator could not run because PyYAML is unavailable, so unchanged frontmatter and the narrow body/link edit were checked directly.
+
+Validation: 80 core/fixture tests, three release-policy tests, 16 installed-consumer checks, real Next Pages baseline/candidate import, lint, types, formatting and peer checks pass. Frozen dependency installation passes. `release:check` generated the beta archive and dirty-source receipt; `release:plan` verified it without publishing. Final publication still requires verification of a clean committed checkout and npm/GitHub account setup. Live Lighthouse evidence remains blocked/unverified; the installed portfolio runner and public URL profiles are isolated under ignored artifacts, and portfolio source checkouts are unchanged.

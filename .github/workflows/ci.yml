@@ -18,8 +18,10 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - run: pnpm test:release
       - run: pnpm build
-      - run: pnpm test:compatibility
+      - run: pnpm test:compatibility vite-react next-app
+      - run: pnpm test:next-pages
       - run: pnpm test:native
   integration:
     runs-on: ubuntu-latest

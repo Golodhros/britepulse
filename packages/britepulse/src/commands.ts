@@ -39,7 +39,7 @@ async function initialize(rest: string[]): Promise<void> {
   });
   if (values.help) {
     console.log(
-      'Usage: britepulse init --url <http(s) URL> [--url <URL>] [--app-root <path>] [--adapter vite|next-webpack] [--runs <count>] [--config <path>]',
+      'Usage: britepulse init --url <http(s) URL> [--url <URL>] [--app-root <path>] [--adapter vite|next-webpack|none] [--runs <count>] [--config <path>]',
     );
 
     return;
@@ -49,9 +49,10 @@ async function initialize(rest: string[]): Promise<void> {
   if (
     values.adapter !== undefined &&
     values.adapter !== 'vite' &&
-    values.adapter !== 'next-webpack'
+    values.adapter !== 'next-webpack' &&
+    values.adapter !== 'none'
   )
-    throw new Error('adapter must be vite or next-webpack');
+    throw new Error('adapter must be vite, next-webpack or none');
   const result = await initializeProject({
     configPath: values.config ?? 'britepulse.config.json',
     appRoot: values['app-root'] ?? process.cwd(),

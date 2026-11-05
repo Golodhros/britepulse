@@ -5,23 +5,23 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { z } from 'zod';
 import { configSchema, loadConfig, type ResolvedConfig } from './config.js';
 
+type BundleAdapter = ResolvedConfig['bundle']['adapter'];
+
 const packageSchema = z.object({
   dependencies: z.record(z.string(), z.string()).optional(),
   devDependencies: z.record(z.string(), z.string()).optional(),
 });
 
-export async function detectProject(
-  appRoot: string,
-): Promise<{ adapters: Array<'vite' | 'next-webpack'> }> {
+export async function detectProject(appRoot: string): Promise<{ adapters: BundleAdapter[] }> {
   const pkg = packageSchema.parse(
     JSON.parse(await readFile(join(appRoot, 'package.json'), 'utf8')),
   );
   const dependencies = { ...pkg.dependencies, ...pkg.devDependencies };
-  const adapters: Array<'vite' | 'next-webpack'> = [];
+  const adapters: BundleAdapter[] = [];
   if (dependencies.vite) adapters.push('vite');
   if (dependencies.next) adapters.push('next-webpack');
 
-  return { adapters };
+  return { adapters: adapters.length ? adapters : ['none'] };
 }
 
 export interface InitOptions {
@@ -29,7 +29,7 @@ export interface InitOptions {
   appRoot: string;
   urls: string[];
   environment?: string;
-  adapter?: 'vite' | 'next-webpack';
+  adapter?: BundleAdapter;
   runs?: number;
 }
 
@@ -53,7 +53,7 @@ export async function initializeProject(
     environment,
     environments: { [environment]: { urls: options.urls } },
     synthetic: { runs: options.runs ?? 3 },
-    bundle: { adapter, outputDir: adapter === 'vite' ? 'dist' : '.next' },
+    bundle: { adapter, outputDir: adapter === 'next-webpack' ? '.next' : 'dist' },
   });
   await mkdir(dirname(configPath), { recursive: true });
   // Never overwrite a project configuration, even when two setup processes race.
@@ -90,6 +90,7 @@ export async function inspectProject(
     return config.appRoot;
   });
   await check('framework', async () => {
+    if (config.bundle.adapter === 'none') return 'generic (synthetic only)';
     const { adapters } = await detectProject(config.appRoot);
     if (!adapters.includes(config.bundle.adapter))
       throw new Error(
@@ -99,6 +100,12 @@ export async function inspectProject(
     return config.bundle.adapter;
   });
   await check('installed-tool', async () => {
+    if (config.bundle.adapter === 'none') {
+      const { resolveLighthouse } = await import('./lighthouse-runner.js');
+      resolveLighthouse(config.appRoot);
+
+      return 'lighthouse 13.6.0; chrome-launcher 1.2.2; no bundle adapter';
+    }
     const require = createRequire(join(config.appRoot, 'package.json'));
     const name = config.bundle.adapter === 'vite' ? 'vite' : 'next';
     const pkg = JSON.parse(await readFile(require.resolve(`${name}/package.json`), 'utf8')) as {

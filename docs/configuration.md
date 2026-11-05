@@ -89,3 +89,9 @@ Original JSON/HTML reports are saved under `original/synthetic/page-<index>/atte
 `normalized/synthetic.json` contains `{ schemaVersion: 1, runId, results: [{ url, aggregate }] }`. This is an experimental collection summary; its `aggregate` uses the documented per-metric aggregation API. Missing slots or values produce a partial run. Successful CLI collection emits a manifest and exits 0; partial collection emits a manifest and exits 1; configuration or fatal collection errors exit 2 and describe retained history through the run ID when one exists. SIGINT/SIGTERM request cancellation and persist a cancelled terminal state. Completed attempts and available reports remain in history.
 
 Use `pnpm test:synthetic:collector` to build the core and run the real collector against the public synthetic fixture with three measured attempts. It requires Chrome and a loopback port. The ordinary unit/installed-consumer suites use explicitly fake engine modules and detached Node processes; passing those does not validate live Lighthouse execution or authenticated collection.
+
+## Synthetic-only projects
+
+`bundle.adapter: "none"` disables bundle integration requirements for URL-based measurement. Initialization falls back to this profile when no Vite/Next dependency is detected, and it can be selected explicitly with `--adapter none`. Doctor checks Lighthouse/launcher metadata instead of requiring a build tool. These runs use manifest `framework: "generic"`; this is an additive value in the initial beta's version-1 manifest contract. Existing Vite/Next configurations retain their defaults. Bundle artifact imports still require their matching supported adapter.
+
+This allows measurement of deployed Expo, Gatsby and other HTTP(S) sites without claiming support for their build artifacts. It does not implement Metro or Gatsby bundle analysis. Collection configuration lives in the runner directory; the target site's code and lockfile do not need changes.

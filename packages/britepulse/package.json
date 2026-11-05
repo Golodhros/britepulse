@@ -1,7 +1,6 @@
 {
   "name": "britepulse",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0-beta.0",
   "type": "module",
   "bin": {
     "britepulse": "./dist/cli.js"
@@ -30,7 +29,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "exports": {
     ".": {
@@ -53,5 +53,27 @@
     "vite": {
       "optional": true
     }
-  }
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "beta",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Golodhros/britepulse.git",
+    "directory": "packages/britepulse"
+  },
+  "homepage": "https://github.com/Golodhros/britepulse#readme",
+  "bugs": {
+    "url": "https://github.com/Golodhros/britepulse/issues"
+  },
+  "author": "Marcos Iglesias",
+  "keywords": [
+    "performance",
+    "lighthouse",
+    "vite",
+    "nextjs",
+    "bundle-analysis"
+  ]
 }

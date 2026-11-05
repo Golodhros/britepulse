@@ -24,10 +24,11 @@ test('redirected input cannot enter the interactive prompt', () => {
   assert.match(result.stderr, /requires a terminal/);
 });
 
-test('version works without a terminal', () => {
+test('version works without a terminal', async () => {
   const result = run('--version');
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /^0\.0\.0\s*$/);
+  const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.equal(result.stdout.trim(), manifest.version);
 });
 
 test('direct setup, doctor and history work without prompts and preserve flag precedence', async () => {

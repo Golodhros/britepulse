@@ -19,10 +19,11 @@ export async function measureProject(
     );
   if (options.signal?.aborted) throw new CommandInterruptedError('cancelled');
   const engine = resolveLighthouse(config.appRoot);
+  const frameworks = { vite: 'vite', 'next-webpack': 'nextjs', none: 'generic' } as const;
   const session = await new RunStore(config.outputDir).create({
     label,
     environment: config.environment,
-    framework: config.bundle.adapter === 'vite' ? 'vite' : 'nextjs',
+    framework: frameworks[config.bundle.adapter],
     configFingerprint: config.fingerprint,
     toolVersions: { lighthouse: '13.6.0', 'chrome-launcher': '1.2.2', node: process.version },
     git: null,

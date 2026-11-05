@@ -96,7 +96,9 @@ async function runWorker(
       throw new SyntheticRunnerFatalError('Could not terminate Chrome', cleanupError);
     }
 
-    return error instanceof Error ? error : new Error(String(error));
+    const message = error instanceof Error ? error.message : String(error);
+
+    return new Error(stderr ? `${message}: ${stderr}` : message, { cause: error });
   }
 }
 
@@ -116,6 +118,8 @@ async function persistReports(directory: string, session: RunSession, base: stri
     json: json === null ? null : `${base}.json`,
     html: html === null ? null : `${base}.html`,
   };
+  const browserLog = await optionalReport(directory, 'chrome/chrome-err.log');
+  if (browserLog) await session.writeArtifact(`${base}.chrome.log`, browserLog.slice(-16000));
   if (json !== null) await session.writeArtifact(reports.json!, json);
   if (html !== null) await session.writeArtifact(reports.html!, html);
 

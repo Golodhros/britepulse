@@ -15,10 +15,11 @@ Choose the kind of help you need. These docs follow [Diátaxis](https://diataxis
 
 ## How-to guides
 
-[Recipes](how-to-guides.md) cover adding the Vite plugin, collecting compression estimates, importing SSR output, selecting an environment, inspecting partial history, and trying experimental Lighthouse collection.
+[Release how-to](releases.md) covers beta preparation and authorized publication. [Recipes](how-to-guides.md) cover adding the Vite plugin, collecting compression estimates, importing SSR output, selecting an environment, inspecting partial history, and trying experimental Lighthouse collection.
 
 ## Reference
 
+- [Release scripts and artifacts](release-reference.md)
 - [CLI commands](reference.md)
 - [Configuration, contracts and programmatic APIs](configuration.md)
 - [Next.js Pages Router import](next-pages-integration.md)
@@ -31,6 +32,10 @@ Choose the kind of help you need. These docs follow [Diátaxis](https://diataxis
 - [Architecture and diagrams](../Architecture.md)
 - [Measurement model](measurement-model.md)
 - [Measurement engine decisions](decisions/measurement-engines.md)
+
+## Release notes
+
+[0.1.0-beta.0 notes](beta-release-notes.md) describe the prepared package and its limitations.
 
 ## Contributor records
 

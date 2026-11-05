@@ -35,4 +35,6 @@ Use the relevant workflow rather than loading every skill:
 | Extend installed-consumer coverage            | [create-integration-test](.agents/skills/create-integration-test/SKILL.md) |
 | Develop a dashboard view                      | [create-report-view](.agents/skills/create-report-view/SKILL.md)           |
 
-Review scope is defined in [.agents/references/review-scope.md](.agents/references/review-scope.md). Reuse existing test/build scripts; there is no Storybook, Vitest, Stylelint or Changesets workflow in this repository.
+Review scope is defined in [.agents/references/review-scope.md](.agents/references/review-scope.md). Reuse existing test/build scripts; there is no Storybook, Vitest or Stylelint workflow in this repository.
+
+Release preparation uses Changesets for the single public `britepulse` package; all other workspaces stay private. Read [release reference](docs/release-reference.md) before changing metadata/workflows. `pnpm release:check` validates a beta artifact; `pnpm release:plan` does not publish. Publication requires an explicit manual workflow dispatch, not ordinary implementation authorization.

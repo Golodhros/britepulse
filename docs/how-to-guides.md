@@ -130,3 +130,17 @@ pnpm exec britepulse analyze --next-build .next --label next-baseline --json
 ```
 
 Inspect `normalized/bundle.json` under the returned run ID. Initial route sets include shared CSS and page assets; the snapshot is explicitly partial because asynchronous route attribution is unavailable. See [Next.js reference](next-pages-integration.md) for required files and rejected router/target combinations. Do not change a Turbopack application's bundler just to use this importer.
+
+## Measure a website built with Expo, Gatsby or another framework
+
+Use a standalone measurement directory with BritePulse, Lighthouse 13.6.0 and chrome-launcher 1.2.2 installed. Keep it separate from the site's source checkout if you do not want to add tooling dependencies to that project. Create configuration with an explicit synthetic-only profile:
+
+```sh
+pnpm exec britepulse init --adapter none --url https://example.com/en/
+pnpm exec britepulse doctor --json
+pnpm exec britepulse measure --experimental --label baseline --json
+```
+
+Replace the URL with the final deployed URL, including its locale/trailing slash when necessary. Use `bundle.adapter: "none"` in hand-written configuration. Runs record `framework: "generic"`; no Vite, Next.js, Expo or Gatsby bundle attribution is claimed. The collector still requires Chrome and its pinned engine/launcher, and existing experimental cold-cache restrictions apply.
+
+Several sites can be separate named environments, each with its own `urls` array. Use `--environment <name>` to select one. A shared environment can contain all target URLs. `history` lists retained results; a timeout or failed navigation is not a measured score.

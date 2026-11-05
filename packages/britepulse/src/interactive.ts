@@ -28,6 +28,11 @@ async function guidedSetup(): Promise<void> {
       : await select({
           message: 'Which bundle adapter should this project use?',
           options: [
+            {
+              value: 'none' as const,
+              label: 'Synthetic measurements only',
+              hint: 'Any reachable website; no bundle analysis',
+            },
             { value: 'vite' as const, label: 'Vite' },
             {
               value: 'next-webpack' as const,

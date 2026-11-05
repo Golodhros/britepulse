@@ -14,7 +14,7 @@ const syntheticSettings = z.strictObject({
   authHook: nonempty.optional(),
 });
 const bundleSettings = z.strictObject({
-  adapter: z.enum(['vite', 'next-webpack']).default('vite'),
+  adapter: z.enum(['vite', 'next-webpack', 'none']).default('vite'),
   buildCommand: z.array(nonempty).min(1).default(['npm', 'run', 'build']),
   outputDir: nonempty.default('dist'),
   statsFile: nonempty.optional(),

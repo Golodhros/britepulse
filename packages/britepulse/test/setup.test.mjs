@@ -85,3 +85,21 @@ test('doctor reports actual installed versions and missing authentication hooks 
     assert.equal(result.ok, false);
     assert(result.checks.some((check) => check.name === 'auth-hook' && check.status === 'error'));
   }));
+
+test('synthetic-only setup accepts Expo projects without claiming a Vite or Next adapter', async () =>
+  withTemporaryDirectory(async (directory) => {
+    const root = await project(directory, { expo: '58.0.14' });
+    assert.deepEqual((await detectProject(root)).adapters, ['none']);
+    const configPath = join(directory, 'synthetic.json');
+    await initializeProject({
+      appRoot: root,
+      configPath,
+      urls: ['https://example.test/'],
+      adapter: 'none',
+    });
+    const settings = await loadConfig(configPath);
+    assert.equal(settings.bundle.adapter, 'none');
+    const checks = await inspectProject(settings);
+    assert.equal(checks.checks.find((check) => check.name === 'framework').status, 'pass');
+    assert.equal(checks.checks.find((check) => check.name === 'installed-tool').status, 'error');
+  }));

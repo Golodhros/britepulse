@@ -16,6 +16,7 @@ test(
       const settings = {
         schemaVersion: 1,
         appRoot: '.',
+        bundle: { adapter: 'none' },
         environments: { local: { urls: ['https://example.test/'] } },
         synthetic: { runs: 1, retries: 0 },
       };
@@ -37,6 +38,7 @@ test(
       ];
       const manifest = JSON.parse(success(cli('cli', args)));
       assert.equal(manifest.status, 'complete');
+      assert.equal(manifest.framework, 'generic');
       const run = join(directory, '.britepulse/runs', manifest.id);
       const sample = JSON.parse(
         await readFile(join(run, 'normalized/synthetic/page-0/attempt-1.json'), 'utf8'),

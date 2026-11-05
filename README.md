@@ -89,6 +89,10 @@ The workspace includes a sample dashboard, a compiled interactive CLI, compatibi
 
 Next: finish live runner validation, add automated build invocation and asynchronous Next.js attribution, and connect comparisons and real data to the dashboard before budgets and release validation. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
 
+## Beta release preparation
+
+Changesets has prepared `0.1.0-beta.0`. See [beta notes](docs/beta-release-notes.md), [release how-to](docs/releases.md) and [release reference](docs/release-reference.md). `pnpm release:check` verifies a tarball; `pnpm release:plan` prints a non-publishing plan. Publishing is a separate manual GitHub workflow and has not been performed.
+
 ## License
 
 [MIT](LICENSE). Shadcn UI components are adapted under the [MIT license](https://github.com/shadcn-ui/ui/blob/main/LICENSE.md); Britecharts is Apache-2.0.

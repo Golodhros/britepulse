@@ -258,3 +258,22 @@ test(
       );
     }),
 );
+
+test(
+  'synthetic-only measurement records generic framework without build-tool dependencies',
+  { skip: !supported },
+  async () =>
+    withTemporaryDirectory(async (directory) => {
+      await installFakeLighthouse(directory);
+      const settings = resolveConfig({
+        schemaVersion: 1,
+        appRoot: directory,
+        bundle: { adapter: 'none' },
+        environments: { local: { urls: ['https://example.test/'] } },
+        synthetic: { runs: 1, retries: 0 },
+      });
+      const manifest = await measureProject(settings, 'generic');
+      assert.equal(manifest.framework, 'generic');
+      assert.equal(manifest.status, 'complete');
+    }),
+);

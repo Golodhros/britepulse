@@ -19,7 +19,13 @@
     "lint": "eslint .",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
-    "test:integration": "pnpm --filter @britepulse/integration run test:integration"
+    "test:integration": "pnpm --filter @britepulse/integration run test:integration",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release:check": "node scripts/release-check.mjs",
+    "release:plan": "node scripts/release.mjs",
+    "release": "node scripts/release.mjs --publish",
+    "test:release": "node --test scripts/tests/release-policy.test.mjs"
   },
   "devDependencies": {
     "eslint": "10.14.0",
@@ -27,6 +33,7 @@
     "@types/node": "26.6.5",
     "eslint-plugin-sonarjs": "4.2.2",
     "oxfmt": "0.76.0",
-    "@stylistic/eslint-plugin": "5.10.0"
+    "@stylistic/eslint-plugin": "5.10.0",
+    "@changesets/cli": "3.0.3"
   }
 }

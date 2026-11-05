@@ -39,7 +39,7 @@ export const runManifestSchema = z
     finishedAt: timestamp.nullable(),
     status: z.enum(['running', 'complete', 'partial', 'failed', 'cancelled']),
     environment: nonempty,
-    framework: z.enum(['vite', 'nextjs']),
+    framework: z.enum(['vite', 'nextjs', 'generic']),
     configFingerprint: z.string().regex(/^[a-f0-9]{64}$/),
     toolVersions: z.record(nonempty, nonempty),
     git: z
