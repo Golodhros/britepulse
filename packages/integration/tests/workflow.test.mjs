@@ -94,6 +94,42 @@ test('installed Vite integration and CLI preserve a real baseline/candidate hist
     assert.notEqual(manifests[0].id, manifests[1].id);
     assert(history.runs.every((run) => run.label === 'same-release-label'));
   });
+  await t.test('compare and report use the installed package and real bundle changes', async () => {
+    const comparison = json(
+      cli('vite-react', ['compare', '--baseline', manifests[0].id, '--candidate', manifests[1].id]),
+    );
+    assert.equal(comparison.compatible, true);
+    const key = JSON.stringify(['bundle', 'All exported assets', 'JS emittedBytes']);
+    assert(comparison.metrics[key].absolute > 50_000);
+    const exported = json(
+      cli('vite-react', [
+        'report',
+        '--comparison',
+        comparison.id,
+        '--output',
+        'comparison-report.html',
+      ]),
+    );
+    const html = await readFile(exported.path, 'utf8');
+    const embedded = JSON.parse(
+      html.match(
+        /<script id="britepulse-report-data" type="application\/json">(.*?)<\/script>/s,
+      )[1],
+    );
+    assert.equal(embedded.comparison.id, comparison.id);
+    assert.equal(embedded.comparison.metrics[key].absolute, comparison.metrics[key].absolute);
+    assert(embedded.rows.length > 0);
+    assert.equal(
+      cli('vite-react', [
+        'report',
+        '--comparison',
+        comparison.id,
+        '--output',
+        'comparison-report.html',
+      ]).status,
+      2,
+    );
+  });
   await t.test('invalid artifacts fail before creating misleading history entries', async () => {
     const invalid = { ...snapshots[0], schemaVersion: 999 };
     await writeFile(join(directory, 'invalid-artifact.json'), JSON.stringify(invalid));

@@ -6,7 +6,7 @@ BritePulse adapts Britecharts' Changesets model: user-facing changes carry chang
 
 ## Review the first beta
 
-The prepared version is `britepulse@0.1.0-beta.0`. Read [beta release notes](beta-release-notes.md), [the changelog](../packages/britepulse/CHANGELOG.md) and [compatibility limits](compatibility.md). The CLI, Vite integration and partial Next Pages importer are available; the dashboard uses sample data and Lighthouse collection remains experimental with blocked live probes.
+The prepared version is `britepulse@0.1.0-beta.0`. Read [beta release notes](beta-release-notes.md), [the changelog](../packages/britepulse/CHANGELOG.md) and [compatibility limits](compatibility.md). The CLI, Vite integration and partial Next Pages importer are available; shared comparisons feed the report dashboard, while local browser launch/rendering validation and live Lighthouse probes remain blocked.
 
 From the repository root, install dependencies and validate the exact checkout:
 

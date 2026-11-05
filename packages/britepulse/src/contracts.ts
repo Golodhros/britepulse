@@ -193,7 +193,18 @@ const deltaSchema = z
       return delta.absolute === null && delta.percent === null;
 
     return delta.baseline !== 0 || delta.percent === null;
-  }, 'Missing measurements and zero baselines must not create fabricated deltas');
+  }, 'Missing measurements and zero baselines must not create fabricated deltas')
+  .refine((delta) => {
+    if (delta.absolute === null) return delta.percent === null;
+    if (
+      delta.baseline === null ||
+      delta.candidate === null ||
+      delta.absolute !== delta.candidate - delta.baseline
+    )
+      return false;
+
+    return delta.percent === null || delta.percent === (delta.absolute / delta.baseline) * 100;
+  }, 'Numeric differences must match the stored measurements');
 export const comparisonSchema = z
   .strictObject({
     schemaVersion,

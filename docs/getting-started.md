@@ -111,4 +111,4 @@ The `runs` array now contains your first entry. In `.britepulse/runs/<id>/`, `or
 
 Run the import command from step 4 again. History now contains two different IDs with the same label; collecting a run does not overwrite earlier evidence.
 
-You have completed the collection workflow. The dashboard still displays sample data; importing this build does not update its charts. Continue with a [task recipe](how-to-guides.md), consult [the CLI reference](reference.md), or read [how measurement identities and unknowns work](measurement-model.md).
+You have completed the collection workflow. To view those runs, follow the [compare-and-report recipe](how-to-guides.md#compare-two-saved-builds-and-share-a-report) and export a comparison HTML file. Continue with a [task recipe](how-to-guides.md), consult [the CLI reference](reference.md), or read [how measurement identities and unknowns work](measurement-model.md).

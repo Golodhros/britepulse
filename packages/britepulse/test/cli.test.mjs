@@ -11,7 +11,8 @@ const run = (...args) =>
 test('help works without a terminal', () => {
   const result = run('--help');
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /not implemented yet/);
+  assert.match(result.stdout, /compare/);
+  assert.match(result.stdout, /report/);
 });
 test('unknown commands use the configuration error exit code', () => {
   const result = run('collect');

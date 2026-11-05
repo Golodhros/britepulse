@@ -7,6 +7,9 @@ minimumReleaseAgeExclude:
   - '@britecharts/core@3.0.0'
   - '@britecharts/react@3.0.0'
   - '@britecharts/wrappers@3.0.0'
+  - '@playwright/test@1.65.0'
+  - playwright-core@1.65.0
+  - playwright@1.65.0
 
 # LHCI's proxy-agent 6 must not satisfy the browser downloader's optional v8 peer.
 packageExtensions:

@@ -24,3 +24,7 @@ export { normalizeLighthouseReport, lighthouseMetricDefinitions } from './lighth
 export type { LighthouseReportContext, NormalizedLighthouseReport } from './lighthouse-report.js';
 export { measureProject } from './measure.js';
 export { importNextPagesBundle, normalizeNextPagesBundle } from './next-pages.js';
+export { compareRuns } from './comparison.js';
+export { exportComparisonReport } from './report.js';
+export { reportDocumentSchema } from './report-data.js';
+export type { ReportDocument, ReportRow } from './report-data.js';

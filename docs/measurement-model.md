@@ -8,7 +8,7 @@ BritePulse keeps original evidence separate from normalized records. Normalizati
 
 A local run ID identifies one collection in history. A label is a human description and can repeat. A source build ID identifies the imported build artifact; importing it twice creates two local runs without changing that source identity. A configuration fingerprint describes the configured measurement profile, not a checkout or storage directory.
 
-Those distinctions let a comparison ask whether two measurements are compatible before computing differences. Compatibility schemas exist, but comparison computation is still separate planned work.
+Those distinctions let a comparison ask whether two measurements are compatible before computing differences. Shared comparison computation checks these identities and profiles before producing numerical differences.
 
 ## Unknown is different from zero
 
@@ -30,4 +30,4 @@ Synthetic navigation metrics describe a controlled browser navigation, not real-
 
 ## Presentation is a separate stage
 
-Stored measurements do not automatically become dashboard findings. The current report application uses illustrative data. Connecting real history, implementing compatible comparisons, evaluating budgets and exporting real-data reports remain explicit work rather than conclusions implied by a successful build.
+Stored measurements feed shared comparison calculations and a validated report model. The exported HTML dashboard presents that model with exact values, counts and diagnostics; it does not invent history or sample trends. Missing/incompatible data hides numerical claims. Browser interaction requires its own validation, and budget evaluation remains a separate step.

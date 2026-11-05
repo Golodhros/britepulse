@@ -173,11 +173,53 @@ async function inspect(command: 'doctor' | 'history', rest: string[]): Promise<v
   }
 }
 
+async function comparisonCommand(command: 'compare' | 'report', rest: string[]): Promise<void> {
+  const { values } = parseArgs({
+    args: rest,
+    options: {
+      ...shared,
+      baseline: { type: 'string' },
+      candidate: { type: 'string' },
+      comparison: { type: 'string' },
+      output: { type: 'string' },
+    },
+  });
+  if (values.help) {
+    console.log(
+      command === 'compare'
+        ? 'Usage: britepulse compare --baseline <run UUID> --candidate <run UUID> [--config <path>] [--json]'
+        : 'Usage: britepulse report --comparison <comparison UUID> --output <new HTML file> [--config <path>] [--json]',
+    );
+
+    return;
+  }
+  const config = await loadConfig(values.config);
+  const store = new RunStore(config.outputDir);
+  if (command === 'compare') {
+    if (!values.baseline || !values.candidate)
+      throw new Error('compare requires --baseline and --candidate run IDs');
+    if (values.comparison || values.output)
+      throw new Error('compare does not accept report options');
+    const { compareRuns } = await import('./comparison.js');
+    print(await compareRuns(store, values.baseline, values.candidate));
+  } else {
+    if (!values.comparison || !values.output)
+      throw new Error('report requires --comparison and --output');
+    if (values.baseline || values.candidate)
+      throw new Error('report accepts a saved comparison ID');
+    const { exportComparisonReport } = await import('./report.js');
+    print({ path: await exportComparisonReport(store, values.comparison, values.output) });
+  }
+}
+
 export async function execute(args: string[]): Promise<void> {
   const [command, ...rest] = args;
   switch (command) {
     case 'init':
       return initialize(rest);
+    case 'compare':
+    case 'report':
+      return comparisonCommand(command, rest);
     case 'measure':
       return measure(rest);
     case 'analyze':

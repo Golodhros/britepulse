@@ -21,11 +21,13 @@ flowchart LR
   Artifact --> Collect
   Next[Next.js Pages client Webpack build] --> NextImport[Manifest and stats importer]
   NextImport --> Collect
-  Store -. future real-data connection .-> UI[Prebuilt React dashboard]
+  Store --> Compare[Shared comparison and report data]
+  Compare --> Export[Standalone HTML export]
+  Export --> UI[Prebuilt React dashboard]
   UI --> Charts[Shadcn and Britecharts]
 ```
 
-Solid arrows describe implemented relationships. The dashed history-to-dashboard link is planned: the dashboard currently displays labeled sample data. The Next.js importer is validated for Pages Router initial assets only; async, App Router and Turbopack attribution remain unavailable.
+Solid arrows describe implemented relationships. Saved comparison data now feeds the prebuilt dashboard through a standalone HTML export. The Next.js importer is validated for Pages Router initial assets only; async, App Router and Turbopack attribution remain unavailable.
 
 | Boundary                    | Owner                                                                  | Responsibility                                                                                    |
 | --------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -36,7 +38,7 @@ Solid arrows describe implemented relationships. The dashed history-to-dashboard
 | Lighthouse adapter          | `lighthouse-runner.ts`, `lighthouse-worker.ts`, `lighthouse-report.ts` | Engine resolution, process isolation, report retention and normalization                          |
 | Next.js importer            | `next-pages.ts`                                                        | Validated Pages client stats and manifest-backed initial route sets; explicit partial attribution |
 | Vite adapter                | `vite.ts`, `vite-collector.ts`, `bundle-graph.ts`                      | Production artifact collection and emitted graph accounting                                       |
-| Dashboard                   | `packages/report`                                                      | React presentation; compiled before packaging                                                     |
+| Dashboard                   | `packages/report`                                                      | React/Shadcn/Britecharts presentation of validated comparison data; compiled before packaging     |
 | Consumer tests              | `packages/integration`                                                 | Production tarball installation and public-interface checks                                       |
 | Compatibility experiments   | `fixtures`                                                             | Pinned upstream builds, synthetic inputs and reproducible evidence                                |
 

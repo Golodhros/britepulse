@@ -5,7 +5,7 @@ BritePulse combines local frontend performance measurements and bundle analysis.
 ## Repository map
 
 - `packages/britepulse`: compiled TypeScript ESM CLI, configuration, result contracts, storage, orchestration and optional build adapters.
-- `packages/report`: Vite React dashboard using Shadcn and Britecharts. It currently displays labeled sample data.
+- `packages/report`: Vite React dashboard using Shadcn and Britecharts. It consumes saved comparison data through standalone HTML export; an unloaded development view is explicitly empty.
 - `packages/integration`: installed-tarball consumer checks; consumer templates are staged into ignored `.artifacts/` before installation.
 - `fixtures`: compatibility experiments, separate from supported integrations.
 - `docs`: contracts, storage, integration decisions and the implementation/review ledger.

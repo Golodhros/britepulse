@@ -23,4 +23,4 @@ Compression is optional and disabled by default. When enabled, gzip level 9 and 
 
 Client and SSR targets are distinct. External imports are excluded from emitted totals and reported as incomplete attribution. The adapter's own metadata file is excluded from the bundle; other files emitted by the build remain visible. Source maps and metadata are not automatically treated as a user's initial network download.
 
-Collection status follows snapshot completeness, so an incomplete artifact is stored as a partial run. Import validation rejects unsupported versions and target mismatches before creating history entries. The dashboard still uses labeled sample data until the shared report feature is connected.
+Collection status follows snapshot completeness, so an incomplete artifact is stored as a partial run. Import validation rejects unsupported versions and target mismatches before creating history entries. Use the compare/report workflow to inspect imported runs in a standalone Britecharts report.

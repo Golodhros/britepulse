@@ -246,3 +246,18 @@ Quality review and fixes:
 - Updated architecture-review guidance to the now-existing release workflow. Formatter and local links pass; the bundled Python skill validator could not run because PyYAML is unavailable, so unchanged frontmatter and the narrow body/link edit were checked directly.
 
 Validation: 80 core/fixture tests, three release-policy tests, 16 installed-consumer checks, real Next Pages baseline/candidate import, lint, types, formatting and peer checks pass. Frozen dependency installation passes. `release:check` generated the beta archive and dirty-source receipt; `release:plan` verified it without publishing. Final publication still requires verification of a clean committed checkout and npm/GitHub account setup. Live Lighthouse evidence remains blocked/unverified; the installed portfolio runner and public URL profiles are isolated under ignored artifacts, and portfolio source checkouts are unchanged.
+
+## Iteration 18 Shared comparisons and real-data Britecharts reports
+
+Implemented shared comparison calculations for stored bundle/synthetic runs and a saved report model. `compare` retains source identities, completeness, metric counts/spread and compatible deltas. `report` exports one HTML file embedding validated comparison JSON, the prebuilt Shadcn/Britecharts app and styles; no server or consumer build is required. The dashboard uses real data and explicit empty/missing/partial/incompatible states rather than sample values or invented trends.
+
+Quality review and fixes:
+
+- Kept profile checks, measurement loading and math outside JSX. Separated browser-safe report contracts, comparison persistence and exclusive export-file handling.
+- Deduplicated bundle sets, propagated missing sizes/subjects, retained per-metric synthetic evidence, rejected mixed targets/profiles/versions and preserved null percentages for zero baselines. Strengthened serialized numeric-delta consistency checks.
+- Added guarded readers for listed ordinary history artifacts, report/comparison identity checks, escaped inline JSON and immutable output behavior. Fixed history containment for dot-prefixed child names and canonical aliases into history.
+- Reused prebuilt UI assets in a standalone report and retained exact-value tables alongside the chart. Added the report app's explicit React DOM dependency and used the installed consumer boundary for runtime/types/report export.
+- Added Playwright file-based checks for filters/chart, mobile layout, partial/incompatible/unknown/empty states, escaped labels and malformed JSON. CI installs Chromium and requires these checks. Chrome aborts at launch in this environment, before rendering; the three local browser cases failed at launch and are not reported as passing.
+- Added an explicit offline consumer-install option after registry metadata waits exceeded the local process timeout; fresh cached installations then completed normally. No validation assertion was weakened.
+
+Validation: 85 core/fixture cases, all 17 fresh-tarball consumer checks, lint, strict types, formatting, peers and production packaging pass. The installed workflow compares real baseline/candidate Vite builds and preserves their >50 KB emitted-JS increase in the exported report. Browser rendering/interaction remains a material CI validation requirement; no local visual pass is claimed. Portfolio testing is stopped as requested. Next group: CI budgets and release validation against this same comparison/report model.

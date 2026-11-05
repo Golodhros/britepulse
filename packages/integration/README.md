@@ -47,3 +47,9 @@ pnpm --filter @britepulse/integration run test:cli
 `install:consumers` always prepares fresh copies first. `prepare:consumers` is also exposed for inspecting staged manifests before installing. `pnpm test:package` remains available as a compatibility alias for fresh packing, installation and package checks only.
 
 CI runs the complete integration suite separately on Node 22.19.0 and Node 26. The existing compatibility fixtures remain responsible for broader framework experiments. Browser dashboard interactions and live Lighthouse measurement will be added when those runtime features are available; checking shipped report assets does not establish browser rendering correctness.
+
+## Report browser checks
+
+After a fresh `pnpm test:integration` has generated the real comparison report, run `pnpm --filter @britepulse/integration run test:report`. Playwright opens the standalone `file://` export; no localhost server is needed. Install Chromium with `pnpm --filter @britepulse/integration exec playwright install chromium` on a host that permits browser launch, or set `CHROME_PATH` to a compatible executable. macOS defaults to installed Chrome. Failed launch is a validation gap, not a skipped/passing UI check.
+
+For offline verification with already populated package metadata/tarballs, set `BRITEPULSE_INTEGRATION_OFFLINE=1` when running `pnpm test:integration`. The default CI path continues to install normally.

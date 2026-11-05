@@ -44,7 +44,7 @@ Runtime Zod schemas and inferred TypeScript types share one definition in `contr
 - `Comparison` preserves nullable measurements and signed differences. Missing measurements cannot acquire deltas; zero baselines cannot acquire percentages; incompatible profiles cannot acquire numeric deltas.
 - `BudgetResult` cannot report a pass or violation for an unknown measurement. It records an error with a reason instead.
 
-These contracts validate serialization boundaries. Per-metric aggregation is available through `aggregateSyntheticSamples`; runner-independent scheduling is available through `scheduleSyntheticSamples`; live collection, comparison calculations and budget evaluation remain separate implementation steps. All report artifact references are relative paths without traversal; local history storage will validate them again at the filesystem boundary.
+These contracts validate serialization boundaries. Per-metric aggregation is available through `aggregateSyntheticSamples`; runner-independent scheduling is available through `scheduleSyntheticSamples`; experimental live collection and shared comparisons are implemented; budget evaluation remains a separate implementation step. All report artifact references are relative paths without traversal; local history storage will validate them again at the filesystem boundary.
 
 ## Synthetic aggregation API
 

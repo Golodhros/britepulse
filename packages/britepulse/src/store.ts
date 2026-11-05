@@ -12,6 +12,8 @@ import {
 } from 'node:fs/promises';
 import { resolve, join, dirname } from 'node:path';
 import { z } from 'zod';
+import { isDeepStrictEqual } from 'node:util';
+import { reportDocumentSchema, type ReportDocument } from './report-data.js';
 import {
   comparisonSchema,
   parseRunManifest,
@@ -62,6 +64,26 @@ async function artifactDestination(directory: string, name: string): Promise<str
   }
 
   return join(directory, ...parts);
+}
+
+/** Stored readers reject symlinked directories/files rather than following history outside its identity. */
+async function readStoredJSON(directory: string, name: string): Promise<unknown> {
+  let current = directory;
+  const root = await lstat(current);
+  if (!root.isDirectory() || root.isSymbolicLink())
+    throw new Error('Stored record is not an ordinary directory');
+  const parts = name.split('/');
+  for (const [index, part] of parts.entries()) {
+    current = join(current, part);
+    const info = await lstat(current);
+    if (
+      info.isSymbolicLink() ||
+      (index === parts.length - 1 ? !info.isFile() : !info.isDirectory())
+    )
+      throw new Error('Stored artifact is not an ordinary file/directory');
+  }
+
+  return JSON.parse(await readFile(current, 'utf8'));
 }
 
 class RunSession {
@@ -184,7 +206,37 @@ export class RunStore {
 
     return manifest;
   }
-  async createComparison(input: Omit<Comparison, 'schemaVersion' | 'id'>): Promise<Comparison> {
+  async readRunArtifact(id: string, name: string): Promise<unknown> {
+    const manifest = await this.read(id);
+    const path = parseValidated(relativeArtifactPath, name, 'Invalid stored artifact path');
+    if (!manifest.artifacts.includes(path))
+      throw new Error('Artifact is not listed in the run manifest');
+
+    return readStoredJSON(join(this.directory, 'runs', manifest.id), path);
+  }
+  async readComparison(id: string): Promise<Comparison> {
+    const comparisonId = parseValidated(z.uuid(), id, 'Invalid comparison ID');
+    const value = comparisonSchema.parse(
+      await readStoredJSON(join(this.directory, 'comparisons', comparisonId), 'comparison.json'),
+    );
+    if (value.id !== comparisonId) throw new Error('Comparison ID does not match its directory');
+
+    return value;
+  }
+  async readComparisonReport(id: string): Promise<ReportDocument> {
+    const comparison = await this.readComparison(id);
+    const report = reportDocumentSchema.parse(
+      await readStoredJSON(join(this.directory, 'comparisons', comparison.id), 'report.json'),
+    );
+    if (!isDeepStrictEqual(report.comparison, comparison))
+      throw new Error('Stored report differs from its comparison');
+
+    return report;
+  }
+  async createComparison(
+    input: Omit<Comparison, 'schemaVersion' | 'id'>,
+    details?: Omit<ReportDocument, 'schemaVersion' | 'comparison'>,
+  ): Promise<Comparison> {
     const comparison = parseValidated(
       comparisonSchema,
       { ...input, schemaVersion: 1, id: randomUUID() },
@@ -194,6 +246,10 @@ export class RunStore {
     await mkdir(join(this.directory, 'comparisons'), { recursive: true });
     const directory = join(await realpath(join(this.directory, 'comparisons')), comparison.id);
     await mkdir(directory);
+    if (details) {
+      const report = reportDocumentSchema.parse({ ...details, schemaVersion: 1, comparison });
+      await atomicJSON(directory, 'report.json', report);
+    }
     await atomicJSON(directory, 'comparison.json', comparison);
 
     return comparison;

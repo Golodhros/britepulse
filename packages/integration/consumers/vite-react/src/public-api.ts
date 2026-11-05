@@ -68,3 +68,7 @@ export { experimentalCollector };
 
 import { normalizeNextPagesBundle, importNextPagesBundle } from 'britepulse';
 export { normalizeNextPagesBundle, importNextPagesBundle };
+
+import { compareRuns, exportComparisonReport, type ReportDocument } from 'britepulse';
+const reportSchemaVersion: ReportDocument['schemaVersion'] = 1;
+export { compareRuns, exportComparisonReport, reportSchemaVersion };

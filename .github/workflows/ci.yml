@@ -38,3 +38,10 @@ jobs:
           version: 12.6.0
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:integration
+      - run: pnpm --filter @britepulse/integration exec playwright install --with-deps chromium
+      - run: pnpm --filter @britepulse/integration run test:report
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: report-browser-${{ matrix.node }}
+          path: packages/integration/.artifacts/browser-results/

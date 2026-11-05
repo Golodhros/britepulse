@@ -200,7 +200,7 @@ importers:
         version: 4.17.21
       next:
         specifier: 16.4.5
-        version: 16.4.5(@opentelemetry/api@1.10.0)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 16.4.5(@opentelemetry/api@1.10.0)(@playwright/test@1.65.0)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -218,7 +218,7 @@ importers:
         version: 4.17.21
       next:
         specifier: 16.4.5
-        version: 16.4.5(@opentelemetry/api@1.10.0)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 16.4.5(@opentelemetry/api@1.10.0)(@playwright/test@1.65.0)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -279,7 +279,11 @@ importers:
         specifier: 8.3.5
         version: 8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1)
 
-  packages/integration: {}
+  packages/integration:
+    devDependencies:
+      '@playwright/test':
+        specifier: 1.65.0
+        version: 1.65.0
 
   packages/report:
     dependencies:
@@ -1036,6 +1040,11 @@ packages:
 
   '@paulirish/trace_engine@0.0.67':
     resolution: {integrity: sha512-AWZSKQDwbWKIO//xGvM8isSyDgEDZWDq12SbMQMxl6eE9ZgWaoc9n/2d7REjwcRANyA1Zjo1rVfJiSRFFGKUww==}
+
+  '@playwright/test@1.65.0':
+    resolution: {integrity: sha512-iGURLGuKDLakSEl7Pgfv8h7f+XLT+V861Wfhz0zlEl5nyFuKUopdkFBPKqTllTUp06aOwPuH8iuUEb3yp3MpbQ==}
+    engines: {node: '>=20'}
+    hasBin: true
 
   '@pnpm/deps.graph-sequencer@1100.0.1':
     resolution: {integrity: sha512-pOr5+q1fLYKwFN3LAJuGZEnfXDcQ73zqgDHMtGy+K+uIoUqyY+6MeDCWFwfu+4EFuq76I5EPFofoNAI+Bmmq4A==}
@@ -2707,6 +2716,16 @@ packages:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
 
+  playwright-core@1.65.0:
+    resolution: {integrity: sha512-vNSKgH6YqtN7cdT/L334zo0a+YwkrpicyrHJlWWPIm/Q+Nn2SWInil01oT0mbu96U4GgoRtCYQD9CzJQgju+lA==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.65.0:
+    resolution: {integrity: sha512-F3AMWcR44qMBt4kq+6Kb6mX7bjGXshktKFOPULd7reED6ZJWevjbNRqysP7q+AATE9kdPEZBibex1BYsvpVoeA==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   postcss@8.5.23:
     resolution: {integrity: sha512-g50586zr4bZmwFiTlflMu8E0bDTb5I5gertgwAKmsdUlTQIhZtunzUlD1WSzwcVWPoAVpsrA6vlfCD7oXvRwgg==}
     engines: {node: ^10 || ^12 || >=14}
@@ -3956,6 +3975,10 @@ snapshots:
   '@paulirish/trace_engine@0.0.67':
     dependencies:
       third-party-web: 0.30.0
+
+  '@playwright/test@1.65.0':
+    dependencies:
+      playwright: 1.65.0
 
   '@pnpm/deps.graph-sequencer@1100.0.1': {}
 
@@ -5413,7 +5436,7 @@ snapshots:
 
   netmask@2.1.1: {}
 
-  next@16.4.5(@opentelemetry/api@1.10.0)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  next@16.4.5(@opentelemetry/api@1.10.0)(@playwright/test@1.65.0)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       '@next/env': 16.4.5
       '@swc/helpers': 0.5.23
@@ -5433,6 +5456,7 @@ snapshots:
       '@next/swc-win32-arm64-msvc': 16.4.5
       '@next/swc-win32-x64-msvc': 16.4.5
       '@opentelemetry/api': 1.10.0
+      '@playwright/test': 1.65.0
       sharp: 0.35.5(@types/node@26.6.5)
     transitivePeerDependencies:
       - '@babel/core'
@@ -5622,6 +5646,12 @@ snapshots:
   pkg-dir@4.2.0:
     dependencies:
       find-up: 4.1.0
+
+  playwright-core@1.65.0: {}
+
+  playwright@1.65.0:
+    dependencies:
+      playwright-core: 1.65.0
 
   postcss@8.5.23:
     dependencies:

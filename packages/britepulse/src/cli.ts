@@ -10,11 +10,13 @@ Usage: britepulse [command]
   init            Create configuration without overwriting an existing file
   analyze         Import a Vite artifact or Next.js Pages Webpack build into history
   measure         Experimental cold-cache Lighthouse collection (requires --experimental)
+  compare         Compare two stored run IDs
+  report          Export a saved comparison as a standalone HTML report
   doctor          Validate the project and resolved measurement profile
   history         List local runs
   (no command)    Open the interactive menu
 
-Live browser compatibility is unvalidated. Report serving is not implemented yet.
+Live browser collection compatibility remains unvalidated.
 `;
 try {
   const args = process.argv.slice(2);

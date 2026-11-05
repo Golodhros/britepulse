@@ -15,7 +15,7 @@ pnpm install
 pnpm dev
 ```
 
-Open the local URL printed by Vite. The dashboard uses React, TypeScript, Tailwind CSS, Shadcn UI components, and Britecharts. Its page and measurement filters work with clearly labeled illustrative data.
+Open the local URL printed by Vite. The dashboard uses React, TypeScript, Tailwind CSS, Shadcn UI components, and Britecharts. The dashboard reads real comparison data; without a comparison it shows an explicit empty state.
 
 ```sh
 pnpm build
@@ -30,7 +30,7 @@ pnpm --filter britepulse dev
 pnpm --filter @britepulse/report preview
 ```
 
-Build once before running the compiled CLI. The last command previews the production report after building it. Vite uses relative asset URLs so the prebuilt dashboard can be packaged for local serving. Report export and a CLI report server are future work.
+Build once before running the compiled CLI. The last command previews the production report after building it. Vite uses relative asset URLs so the prebuilt dashboard can be packaged for local serving. The report command exports a standalone HTML file with real comparison data, styles and the prebuilt app; no report server is required.
 
 ## Workspace
 
@@ -85,9 +85,9 @@ See [tested paths and limitations](docs/compatibility.md), [engine decisions](do
 
 ## Status and next work
 
-The workspace includes a sample dashboard, a compiled interactive CLI, compatibility fixtures, and prebuilt dashboard assets in the CLI tarball. `--help` and `--version` run without loading Clack, React, charts, or a browser. It includes configuration validation and programmatic immutable local history. It imports Vite production artifacts and Next.js Pages client Webpack builds into local history, with explicit partial Next.js attribution. An experimental `measure --experimental` command collects cold-cache Lighthouse reports using application-installed Lighthouse 13.6.0 and chrome-launcher 1.2.2 on macOS/Linux; live browser compatibility is unvalidated. Warm-cache collection, authentication hooks, App Router/Turbopack attribution, computed comparisons, budgets, and real-data report export remain in progress. Sample values are not performance findings.
+The workspace includes a comparison dashboard, a compiled interactive CLI, compatibility fixtures, and prebuilt dashboard assets in the CLI tarball. `--help` and `--version` run without loading Clack, React, charts, or a browser. It includes configuration validation and programmatic immutable local history. It imports Vite production artifacts and Next.js Pages client Webpack builds into local history, with explicit partial Next.js attribution. An experimental `measure --experimental` command collects cold-cache Lighthouse reports using application-installed Lighthouse 13.6.0 and chrome-launcher 1.2.2 on macOS/Linux; live browser compatibility is unvalidated. Warm-cache collection, authentication hooks, App Router/Turbopack attribution, budgets and automated build orchestration remain in progress. Shared comparisons and real-data HTML report export are implemented; local browser rendering remains unverified because Chrome launch is blocked. Unknown/partial/incompatible measurements stay explicit; no significance verdict is implied.
 
-Next: finish live runner validation, add automated build invocation and asynchronous Next.js attribution, and connect comparisons and real data to the dashboard before budgets and release validation. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
+Next: finish live runner validation, add automated build invocation and asynchronous Next.js attribution, then complete CI budgets and release validation. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
 
 ## Beta release preparation
 

@@ -144,3 +144,25 @@ pnpm exec britepulse measure --experimental --label baseline --json
 Replace the URL with the final deployed URL, including its locale/trailing slash when necessary. Use `bundle.adapter: "none"` in hand-written configuration. Runs record `framework: "generic"`; no Vite, Next.js, Expo or Gatsby bundle attribution is claimed. The collector still requires Chrome and its pinned engine/launcher, and existing experimental cold-cache restrictions apply.
 
 Several sites can be separate named environments, each with its own `urls` array. Use `--environment <name>` to select one. A shared environment can contain all target URLs. `history` lists retained results; a timeout or failed navigation is not a measured score.
+
+## Compare two saved builds and share a report
+
+Collect and import both builds, then find their UUIDs:
+
+```sh
+pnpm exec britepulse history --json
+```
+
+Use the selected IDs as baseline and candidate. Labels need not be unique:
+
+```sh
+pnpm exec britepulse compare --baseline BASELINE_UUID --candidate CANDIDATE_UUID --json
+```
+
+The output includes a new comparison `id`, compatibility diagnostics and metric keys/values. Use that comparison ID to export a new file:
+
+```sh
+pnpm exec britepulse report --comparison COMPARISON_UUID --output reports/release-comparison.html --json
+```
+
+Open the resulting HTML file in a browser. Choose a subject and measurement to inspect its real baseline/candidate values. Unknown/incompatible values do not become bars or numeric differences. The file includes its data, styles and app; share it without starting a server. Choose a new filename for another export, because existing output is never overwritten. See [comparison reference](comparisons-and-reports.md) for compatibility and partial-data semantics.
