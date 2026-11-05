@@ -30,7 +30,7 @@ Build once before running the compiled CLI. The last command previews the produc
 
 ## Workspace
 
-- `packages/britepulse`: Clack CLI shell and initial shared result types. Interactive prompts require a terminal; redirected input fails promptly with exit code 2.
+- `packages/britepulse`: Clack CLI, configuration, data contracts, local history and optional bundle adapters. Interactive prompts require a terminal; redirected input fails promptly with exit code 2.
 - `packages/report`: Vite dashboard application. `components.json` configures the Shadcn registry and `@/` aliases. UI components live in `src/components/ui`.
 
 Add Shadcn components from the report directory:
@@ -43,6 +43,10 @@ pnpm dlx shadcn@latest add button
 The current scaffold adapts the Shadcn Card component. See [Shadcn Vite setup](https://ui.shadcn.com/docs/installation/vite) and [Britecharts React](https://britecharts.github.io/britecharts/docs/packages/react-readme).
 
 ESLint includes the TypeScript and SonarJS recommended rules. Whole-Lodash imports are exempted only in the four candidate fixtures that deliberately create measurable bundle growth; production code uses the full recommended ruleset.
+
+## Development skills
+
+[AGENTS.md](AGENTS.md) indexes the repository's `.agents/skills` workflows. Use `$audit-changes` for checks and `$quality` for the implement-review-cleanup loop, with focused skills for Node tests, installed-consumer integration tests and report views.
 
 ## Configure a project
 
@@ -79,7 +83,7 @@ See [tested paths and limitations](docs/compatibility.md), [engine decisions](do
 
 The workspace includes a sample dashboard, a compiled interactive CLI, compatibility fixtures, and prebuilt dashboard assets in the CLI tarball. `--help` and `--version` run without loading Clack, React, charts, or a browser. It includes configuration validation and programmatic immutable local history. It imports production Vite bundle artifacts into local history. Lighthouse collection, Next.js import, computed comparisons, budgets, and real-data report export remain in progress. Sample values are not performance findings.
 
-Next: validate runner and bundler integrations, finalize versioned result contracts, implement immutable local storage under `.britepulse/`, and connect collection and comparisons to the dashboard. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
+Next: finish runner validation and median aggregation, add automated build invocation and validated Next.js import, and connect comparisons and real data to the dashboard before budgets and release validation. Measurements will retain individual samples and report per-metric medians, with three measured runs by default. Remote storage is outside the initial scope.
 
 ## License
 

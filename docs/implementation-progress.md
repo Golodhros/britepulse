@@ -127,3 +127,17 @@ Review findings and cleanup:
 - Scoped one documented rule exception to the four deliberately bloated candidate fixtures. Their whole-Lodash imports are regression inputs; replacing them with subpath imports would remove the bundle-growth behavior being tested. No production SonarJS rule is disabled.
 
 Validation: zero ESLint findings, 46 core/fixture tests, 11 clean-tarball consumer integration checks, strict typechecks, formatting, production builds through prepack, peer dependency checks and frozen-lockfile installation pass.
+
+## Iteration 9 Repository development skills
+
+Added a repository-local `.agents/skills` catalog and an `AGENTS.md` entrypoint, adapted from Britecharts to BritePulse's actual tooling and boundaries. The familiar audit, code, architecture, style and quality workflows are joined by Node unit-test, installed-consumer integration-test and report-view skills.
+
+Review findings and cleanup:
+
+- Centralized review scoping so staged, unstaged, untracked and task-committed changes are accounted for, including work performed directly on main.
+- Replaced Vitest/source-alias and Storybook assumptions with Node tests against compiled output, isolated tarball consumers, and the existing Vite/Shadcn/Britecharts report application.
+- Preserved the implement-review-cleanup loop without adding approval gates, mandatory delegation, invented scripts or unrelated full-suite checks for documentation-only work.
+- Linked maintained manifests and domain documents rather than copying version pins, test counts or the whole implementation plan into every skill.
+- Distinguished schemas, experiments and sample views from shipping measurement/comparison/report capabilities. Updated stale README next-work wording to match the actual implementation.
+
+Validation: all eight skills pass the skill-creator frontmatter/scaffold validator; all local instruction links resolve; the new Markdown passes Prettier and the diff has no whitespace errors. Reviewed routing for core tests, installed Vite consumers, committed changes on main and documentation-only audits. Runtime code and dependencies are unchanged, so unit and integration suites were not rerun for this documentation-only change.
