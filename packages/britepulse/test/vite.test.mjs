@@ -46,11 +46,12 @@ test('graph closure handles shared chunks, cycles and static/async overlap', () 
 });
 test('unresolved emitted references remain explicit unknowns', () => {
   const snapshot = resolveBundleGraph(
-    [asset('main.js', ['missing.js'])],
+    [asset('main.js', ['missing.js', 'missing.mjs'])],
     { main: 'main.js' },
     metadata,
   );
   assert.equal(snapshot.assets.find((asset) => asset.id === 'missing.js').sizes.emittedBytes, null);
+  assert.equal(snapshot.assets.find((asset) => asset.id === 'missing.mjs').kind, 'js');
   assert.equal(snapshot.completeness.status, 'partial');
 });
 async function fixture(directory) {

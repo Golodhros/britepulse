@@ -3,6 +3,39 @@ export type GraphAsset = BundleSnapshot['assets'][number] & {
   imports: string[];
   dynamicImports: string[];
 };
+export function assetKind(id: string): GraphAsset['kind'] {
+  if (id.endsWith('.js') || id.endsWith('.mjs')) return 'js';
+  if (id.endsWith('.css')) return 'css';
+  return 'other';
+}
+
+function includeUnresolvedAssets(
+  input: GraphAsset[],
+  assets: Map<string, GraphAsset>,
+  issues: string[],
+): void {
+  for (const asset of input) {
+    for (const reference of [...asset.imports, ...asset.dynamicImports]) {
+      if (assets.has(reference)) continue;
+      issues.push(`Unresolved emitted asset: ${reference}`);
+      assets.set(reference, {
+        id: reference,
+        kind: assetKind(reference),
+        sizes: {
+          emittedBytes: null,
+          parsedBytes: null,
+          gzipBytes: null,
+          brotliBytes: null,
+          transferBytes: null,
+        },
+        modules: [],
+        imports: [],
+        dynamicImports: [],
+      });
+    }
+  }
+}
+
 export function resolveBundleGraph(
   input: GraphAsset[],
   entries: Record<string, string>,
@@ -12,26 +45,7 @@ export function resolveBundleGraph(
   const assets = new Map(input.map((asset) => [asset.id, asset]));
   if (assets.size !== input.length) throw new Error('Duplicate asset identifiers in bundle graph');
   const issues = [...diagnostics];
-  for (const asset of input)
-    for (const reference of [...asset.imports, ...asset.dynamicImports]) {
-      if (!assets.has(reference)) {
-        issues.push(`Unresolved emitted asset: ${reference}`);
-        assets.set(reference, {
-          id: reference,
-          kind: reference.endsWith('.js') ? 'js' : reference.endsWith('.css') ? 'css' : 'other',
-          sizes: {
-            emittedBytes: null,
-            parsedBytes: null,
-            gzipBytes: null,
-            brotliBytes: null,
-            transferBytes: null,
-          },
-          modules: [],
-          imports: [],
-          dynamicImports: [],
-        });
-      }
-    }
+  includeUnresolvedAssets(input, assets, issues);
   const closure = (roots: Iterable<string>, dynamic: boolean): Set<string> => {
     const visited = new Set<string>();
     const queue = [...roots];

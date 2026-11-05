@@ -27,6 +27,11 @@ export class RunExecutionError extends Error {
     this.name = 'RunExecutionError';
   }
 }
+function failureStatus(error: unknown, session: RunSession): 'cancelled' | 'partial' | 'failed' {
+  if (error instanceof CommandInterruptedError && error.reason === 'cancelled') return 'cancelled';
+  return session.manifest.artifacts.length ? 'partial' : 'failed';
+}
+
 /** Persist a terminal state even when collection fails or is cancelled. */
 export async function collectRun<T>(
   store: RunStore,
@@ -40,12 +45,7 @@ export async function collectRun<T>(
     const manifest = await session.finish(completion.status, completion.diagnostics);
     return { value, manifest };
   } catch (error) {
-    const status =
-      error instanceof CommandInterruptedError && error.reason === 'cancelled'
-        ? 'cancelled'
-        : session.manifest.artifacts.length
-          ? 'partial'
-          : 'failed';
+    const status = failureStatus(error, session);
     const manifest = await session.finish(status, [
       error instanceof Error ? error.message : String(error),
     ]);

@@ -64,7 +64,7 @@ test('failed writes cannot overwrite artifacts or silently produce a complete ru
 test('paths cannot traverse, replace the manifest or follow artifact symlinks', () =>
   fixture(async (store, directory) => {
     const session = await store.create(metadata);
-    for (const path of ['../outside.txt', '/tmp/outside.txt', 'manifest.json'])
+    for (const path of ['../outside.txt', join(directory, 'outside.txt'), 'manifest.json'])
       await assert.rejects(session.writeArtifact(path, 'bad'));
     const outside = join(directory, 'outside');
     await mkdir(outside);

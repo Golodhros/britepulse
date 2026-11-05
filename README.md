@@ -42,6 +42,8 @@ pnpm dlx shadcn@latest add button
 
 The current scaffold adapts the Shadcn Card component. See [Shadcn Vite setup](https://ui.shadcn.com/docs/installation/vite) and [Britecharts React](https://britecharts.github.io/britecharts/docs/packages/react-readme).
 
+ESLint includes the TypeScript and SonarJS recommended rules. Whole-Lodash imports are exempted only in the four candidate fixtures that deliberately create measurable bundle growth; production code uses the full recommended ruleset.
+
 ## Configure a project
 
 After building, use the compiled CLI:

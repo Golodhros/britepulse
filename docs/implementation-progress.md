@@ -111,3 +111,19 @@ Review findings and cleanup:
 - Added a separate CI integration job for Node 22.19.0 and Node 26. Local execution uses Node 26.9.0; the CI matrix itself has not been run here.
 
 Validation: the complete fresh pack/install/test pipeline and its 11 integration checks pass locally. Strict consumer TypeScript compilation includes root, config and Vite exports. Browser dashboard interaction and live Lighthouse collection remain outside this suite until those runtime features are available.
+
+## Iteration 8 SonarJS linting and architecture cleanup
+
+Added ESLint-compatible `eslint-plugin-sonarjs` 4.2.2 and enabled its recommended rules across source, scripts, tests and consumer templates. The initial run reported 17 findings.
+
+Review findings and cleanup:
+
+- Split CLI dispatch into focused command handlers and separated terminal presentation for doctor and history.
+- Extracted Vite collection from plugin lifecycle and artifact writing, with focused helpers for emitted sizes, imports, entrypoints and manifest relationships.
+- Shared asset-kind classification between emitted and unresolved graph assets, including `.mjs` regression coverage.
+- Removed nested conditionals/templates while preserving deterministic fingerprint ordering, failure status handling and sample dashboard values.
+- Made invalid-path tests use ordinary absolute paths or their owned temporary directory; no publicly writable directory literal is needed to exercise rejection.
+- Changed the startup integration test to assert the imported public API directly in addition to subprocess success.
+- Scoped one documented rule exception to the four deliberately bloated candidate fixtures. Their whole-Lodash imports are regression inputs; replacing them with subpath imports would remove the bundle-growth behavior being tested. No production SonarJS rule is disabled.
+
+Validation: zero ESLint findings, 46 core/fixture tests, 11 clean-tarball consumer integration checks, strict typechecks, formatting, production builds through prepack, peer dependency checks and frozen-lockfile installation pass.

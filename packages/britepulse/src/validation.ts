@@ -19,9 +19,10 @@ export const relativeArtifactPath = z
 export function parseValidated<T>(schema: z.ZodType<T>, input: unknown, label: string): T {
   const result = schema.safeParse(input);
   if (!result.success) {
-    throw new Error(
-      `${label}: ${result.error.issues.map((issue) => `${issue.path.join('.') || 'root'}: ${issue.message}`).join('; ')}`,
-    );
+    const issues = result.error.issues
+      .map((issue) => `${issue.path.join('.') || 'root'}: ${issue.message}`)
+      .join('; ');
+    throw new Error(`${label}: ${issues}`);
   }
   return result.data;
 }

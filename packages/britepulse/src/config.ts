@@ -67,12 +67,17 @@ export interface ResolvedConfig extends ProjectConfig {
   fingerprint: string;
 }
 
+function compareKeys(a: string, b: string): number {
+  if (a === b) return 0;
+  return a < b ? -1 : 1;
+}
+
 function stableJSON(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(stableJSON).join(',')}]`;
   if (value !== null && typeof value === 'object') {
     return `{${Object.entries(value)
       .filter(([, child]) => child !== undefined)
-      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+      .sort(([a], [b]) => compareKeys(a, b))
       .map(([key, child]) => `${JSON.stringify(key)}:${stableJSON(child)}`)
       .join(',')}}`;
   }

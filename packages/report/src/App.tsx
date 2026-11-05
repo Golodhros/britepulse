@@ -5,11 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 const pages = ['/checkout', '/search', '/'];
 const dates = ['2026-10-30', '2026-10-31', '2026-11-01', '2026-11-02', '2026-11-03', '2026-11-04'];
 const sampleRuns = [2100, 2020, 2150, 1980, 1890, 1840];
+const pageScales: Record<string, number> = { '/checkout': 1, '/search': 0.8, '/': 0.6 };
 
 export default function App() {
   const [page, setPage] = useState(pages[0]);
   const [metric, setMetric] = useState<'lcp' | 'bundle'>('lcp');
-  const scale = page === '/checkout' ? 1 : page === '/search' ? 0.8 : 0.6;
+  const scale = pageScales[page] ?? 0.6;
   const values = sampleRuns.map((value) =>
     Math.round((metric === 'lcp' ? value : value / 5) * scale),
   );

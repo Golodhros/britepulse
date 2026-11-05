@@ -3,6 +3,8 @@ import { resolve } from 'node:path';
 import { detectProject, initializeProject, inspectProject, loadConfig } from './setup.js';
 import { httpUrl } from './validation.js';
 import { RunStore } from './store.js';
+import type { DoctorCheck } from './setup.js';
+import type { ResolvedConfig } from './config.js';
 function cancelled(value: unknown): value is symbol {
   if (!isCancel(value)) return false;
   cancel('Cancelled.');
@@ -60,6 +62,30 @@ async function guidedSetup(): Promise<void> {
   log.success(`Saved ${result.configPath}`);
   outro('Run britepulse doctor to inspect the resolved project settings.');
 }
+function printCheck(check: DoctorCheck): void {
+  const output = `${check.name}: ${check.detail}`;
+  if (check.status === 'error') log.error(output);
+  else if (check.status === 'warning') log.warn(output);
+  else log.success(output);
+}
+
+async function showDoctor(config: ResolvedConfig): Promise<void> {
+  const result = await inspectProject(config);
+  for (const check of result.checks) printCheck(check);
+  log.info(
+    `${config.environment}: ${config.environments[config.environment]!.urls.join(', ')}; ${config.synthetic.runs} measured runs per URL`,
+  );
+  outro(result.ok ? 'Configuration checks passed.' : 'Resolve the checks above before collection.');
+  if (!result.ok) process.exitCode = 2;
+}
+
+async function showHistory(config: ResolvedConfig): Promise<void> {
+  const { runs, diagnostics } = await new RunStore(config.outputDir).discover();
+  for (const diagnostic of diagnostics) log.warn(diagnostic);
+  for (const run of runs) log.info(`${run.id} · ${run.label} · ${run.status} · ${run.createdAt}`);
+  outro(runs.length ? `${runs.length} local runs` : 'No local runs yet.');
+}
+
 export async function interactive(): Promise<void> {
   intro('BritePulse');
   const task = await select({
@@ -73,25 +99,6 @@ export async function interactive(): Promise<void> {
   if (cancelled(task)) return;
   if (task === 'init') return guidedSetup();
   const config = await loadConfig();
-  if (task === 'doctor') {
-    const result = await inspectProject(config);
-    for (const check of result.checks) {
-      const output = `${check.name}: ${check.detail}`;
-      if (check.status === 'error') log.error(output);
-      else if (check.status === 'warning') log.warn(output);
-      else log.success(output);
-    }
-    log.info(
-      `${config.environment}: ${config.environments[config.environment]!.urls.join(', ')}; ${config.synthetic.runs} measured runs per URL`,
-    );
-    outro(
-      result.ok ? 'Configuration checks passed.' : 'Resolve the checks above before collection.',
-    );
-    if (!result.ok) process.exitCode = 2;
-  } else {
-    const { runs, diagnostics } = await new RunStore(config.outputDir).discover();
-    for (const diagnostic of diagnostics) log.warn(diagnostic);
-    for (const run of runs) log.info(`${run.id} · ${run.label} · ${run.status} · ${run.createdAt}`);
-    outro(runs.length ? `${runs.length} local runs` : 'No local runs yet.');
-  }
+  if (task === 'doctor') return showDoctor(config);
+  return showHistory(config);
 }

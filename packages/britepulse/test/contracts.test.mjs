@@ -97,7 +97,7 @@ test('failed samples require diagnostics and artifact paths cannot traverse hist
   assert.equal(syntheticSampleSchema.safeParse({ ...sample, error: null }).success, false);
   for (const json of [
     '../outside.json',
-    '/tmp/outside.json',
+    '/outside.json',
     'C:\\outside.json',
     'artifacts/../outside.json',
   ])

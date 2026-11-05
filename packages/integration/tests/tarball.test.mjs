@@ -73,13 +73,18 @@ export async function resolve(specifier, context, next) {
         flag,
       ]),
     );
-  success(
+  const exportedTypes = success(
     command('cli', process.execPath, [
       '--experimental-loader',
       loader,
       '--input-type=module',
       '--eval',
-      "import {RunStore,resolveConfig} from 'britepulse';import {loadConfig} from 'britepulse/config';if(typeof RunStore !== 'function'||typeof resolveConfig !== 'function'||typeof loadConfig !== 'function')process.exit(1);",
+      "import {RunStore,resolveConfig} from 'britepulse';import {loadConfig} from 'britepulse/config';console.log(JSON.stringify({store:typeof RunStore,resolve:typeof resolveConfig,load:typeof loadConfig}));",
     ]),
   );
+  assert.deepEqual(JSON.parse(exportedTypes), {
+    store: 'function',
+    resolve: 'function',
+    load: 'function',
+  });
 });
