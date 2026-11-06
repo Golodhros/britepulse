@@ -27,3 +27,5 @@ Programmatic APIs: `compareRuns(store, baselineId, candidateId)`, `exportCompari
 ## Validation
 
 Core cases cover compatibility, unknowns, added entrypoints, zero baselines, source retention and HTML escaping. Installed consumers compare actual Vite baseline/candidate builds, check the known dependency growth and export the report through the public CLI. Playwright tests use the exported file directly and cover filters/chart, narrow layout, partial/incompatible/unknown/empty states and invalid JSON. Local browser launch currently fails before rendering; a successful build or file export is not claimed as browser validation.
+
+Pass `--budgets <JSON file>` to `report` to embed evaluated CI rules and their verdicts. The programmatic fourth argument accepts that budget file object. This annotates the exported report without changing the saved comparison. See [budget reference](budgets.md).

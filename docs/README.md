@@ -19,6 +19,7 @@ Choose the kind of help you need. These docs follow [Diátaxis](https://diataxis
 
 ## Reference
 
+- [CI budgets](budgets.md)
 - [Comparisons and reports](comparisons-and-reports.md)
 - [Release scripts and artifacts](release-reference.md)
 - [CLI commands](reference.md)

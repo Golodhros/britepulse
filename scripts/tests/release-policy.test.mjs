@@ -19,6 +19,7 @@ const checks = [
   'test:release',
   'format:check',
   'test:integration',
+  'test:report',
   'test:next-pages',
 ];
 
@@ -60,6 +61,7 @@ test('receipt refuses changed tarballs, versions, source commits and missing che
     { gitHead: 'other' },
     { filename: '../other.tgz' },
     { checks: [] },
+    { checks: checks.filter((check) => check !== 'test:report') },
   ])
     assert.throws(() =>
       verifyReleaseReceipt(plan, { ...receipt, ...override }, 'sha512-verified', 'commit'),

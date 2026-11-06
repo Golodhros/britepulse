@@ -41,6 +41,7 @@ export function verifyReleaseReceipt(plan, receipt, integrity, head, forPublish 
     'test:release',
     'format:check',
     'test:integration',
+    'test:report',
     'test:next-pages',
   ]);
 }

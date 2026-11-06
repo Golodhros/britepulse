@@ -13,6 +13,7 @@ async function variant(name: string, edit: (value: ReportDocument) => void): Pro
     /(<script id="britepulse-report-data" type="application\/json">)(.*?)(<\/script>)/s;
   const match = html.match(pattern)!;
   const data = JSON.parse(match[2]!) as ReportDocument;
+  delete data.budgets;
   edit(data);
   const json = JSON.stringify(data).replaceAll('<', '\\u003c');
   await mkdir(directory, { recursive: true });
@@ -32,6 +33,7 @@ test('standalone file renders real bundle comparison, filters, chart and narrow 
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(pathToFileURL(source).href);
   await expect(page.getByText('Compatible profiles', { exact: true })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'CI budgets' })).toContainText('CI budgets: fail');
   await page.getByLabel('Measurement').selectOption({ label: 'JS emittedBytes (bytes)' });
   await expect(page.locator('svg').first()).toBeVisible();
   await expect(page.getByText('same-release-label', { exact: true })).toHaveCount(2);

@@ -261,3 +261,17 @@ Quality review and fixes:
 - Added an explicit offline consumer-install option after registry metadata waits exceeded the local process timeout; fresh cached installations then completed normally. No validation assertion was weakened.
 
 Validation: 85 core/fixture cases, all 17 fresh-tarball consumer checks, lint, strict types, formatting, peers and production packaging pass. The installed workflow compares real baseline/candidate Vite builds and preserves their >50 KB emitted-JS increase in the exported report. Browser rendering/interaction remains a material CI validation requirement; no local visual pass is claimed. Portfolio testing is stopped as requested. Next group: CI budgets and release validation against this same comparison/report model.
+
+## Iteration 19 CI budgets and release validation
+
+Implemented `budget` against saved comparisons, with absolute ceilings/floors and allowed percentage regressions. Selectors identify exact group/subject/metric rows and source units. Exit 0 means all rules pass, 1 means violation and 2 means measurement/configuration error; errors dominate violations. Optional JSON exports are exclusive and outside immutable history. HTML reports can embed the same evaluated rules without changing the saved comparison.
+
+Quality review and fixes:
+
+- Kept browser-safe budget schemas separate from the pure evaluator and filesystem/CLI orchestration. Reused the existing shared comparison/report model and export guard; added no runtime dependencies.
+- Required compatible, complete runs and known values; synthetic metrics require at least three valid samples on each side. Zero baselines cannot pass percentage rules. Higher-is-better scores use fractional floors and direction-aware regression; improvements consume no allowance.
+- Strengthened report selector and sample-metadata consistency validation to reject contradictory imported data. Tested equality, unrounded percentages, partial/incompatible/unknown data, unit errors, missing selectors, insufficient samples and malformed rules.
+- Exercised budget pass/violation/error exit codes through the installed tarball against real Vite builds, including exclusive JSON export and verdict-bearing HTML. Added public type coverage and browser assertions for the budget panel.
+- Made report browser tests mandatory in release receipts, installed Chromium in the manual publish workflow and invalidated earlier receipts before verification. Policy tests reject a receipt missing this check. Updated the unpublished beta descriptions and Diátaxis reference/how-to docs.
+
+Validation: lint, types, formatting, 92 core/fixture cases, three release-policy cases, 17 fresh-tarball consumer checks and production packaging pass. The real Next Pages pair still verifies +70017 emitted JS bytes. Local report tests fail before rendering because Chrome cannot launch; release verification therefore stops without a receipt. CI must establish browser rendering/interaction before publication. No publication or portfolio testing was performed.

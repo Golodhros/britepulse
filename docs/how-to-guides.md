@@ -166,3 +166,16 @@ pnpm exec britepulse report --comparison COMPARISON_UUID --output reports/releas
 ```
 
 Open the resulting HTML file in a browser. Choose a subject and measurement to inspect its real baseline/candidate values. Unknown/incompatible values do not become bars or numeric differences. The file includes its data, styles and app; share it without starting a server. Choose a new filename for another export, because existing output is never overwritten. See [comparison reference](comparisons-and-reports.md) for compatibility and partial-data semantics.
+
+## Gate a comparison in CI
+
+Create a budget file using the selectors in your saved comparison's `report.json`; see [budget reference](budgets.md). After importing baseline and candidate artifacts with the same profile, create their comparison and evaluate it:
+
+```sh
+britepulse compare --baseline "$BASELINE_ID" --candidate "$CANDIDATE_ID" --json > comparison.json
+COMPARISON_ID=$(node -p "JSON.parse(require('node:fs').readFileSync('comparison.json','utf8')).id")
+britepulse report --comparison "$COMPARISON_ID" --budgets budgets.json --output comparison.html
+britepulse budget --comparison "$COMPARISON_ID" --budgets budgets.json --output budget-result.json --json
+```
+
+Use fresh output paths per job. Upload the HTML and JSON as CI artifacts, including on failure. Preserve exit codes 1 (violation) and 2 (measurement/configuration error); either should fail the job. Source artifact collection remains your build pipeline's responsibility.

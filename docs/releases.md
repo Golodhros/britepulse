@@ -59,3 +59,5 @@ Merge the version PR after review, then use the manual publish recipe for that e
 The publisher checks registry state before publication. An existing version is skipped only when its registry integrity matches the verified tarball; tag/release reporting can then finish. A different artifact or an authentication/network response other than explicit 404 stops the run. Preserve the uploaded tarball/receipt from the failed workflow, inspect the registry and tags, and correct the underlying failure before rerunning. Do not change package contents under an already published version.
 
 See [release reference](release-reference.md) for exact scripts, files and checks. GitHub workflow execution, npm authentication and actual publication are external steps and have not been exercised by local dry runs.
+
+Before local `release:check`, install the report browser with `pnpm --filter @britepulse/integration exec playwright install --with-deps chromium`. The manual release workflow includes this step. Browser failures stop release verification; do not skip the check or reuse an earlier receipt.

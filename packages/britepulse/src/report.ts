@@ -2,6 +2,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { writeExportFile } from './export-file.js';
 import { fileURLToPath } from 'node:url';
+import { evaluateBudgets } from './budgets.js';
 import { RunStore } from './store.js';
 
 function inlineScript(text: string): string {
@@ -13,8 +14,11 @@ export async function exportComparisonReport(
   store: RunStore,
   comparisonId: string,
   output: string,
+  budgetFile?: unknown,
 ): Promise<string> {
-  const report = await store.readComparisonReport(comparisonId);
+  const saved = await store.readComparisonReport(comparisonId);
+  const report =
+    budgetFile === undefined ? saved : { ...saved, budgets: evaluateBudgets(saved, budgetFile) };
   const assets = fileURLToPath(new URL('./report/assets/', import.meta.url));
   const files = await readdir(assets);
   const scripts = files.filter((file) => file.endsWith('.js'));

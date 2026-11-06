@@ -72,3 +72,21 @@ export { normalizeNextPagesBundle, importNextPagesBundle };
 import { compareRuns, exportComparisonReport, type ReportDocument } from 'britepulse';
 const reportSchemaVersion: ReportDocument['schemaVersion'] = 1;
 export { compareRuns, exportComparisonReport, reportSchemaVersion };
+
+import {
+  evaluateBudgets,
+  budgetFileSchema,
+  budgetEvaluationSchema,
+  type BudgetRule,
+  type BudgetEvaluation,
+} from 'britepulse';
+const budgetRule: BudgetRule = {
+  group: 'bundle',
+  subject: 'All exported assets',
+  metric: 'JS emittedBytes',
+  unit: 'bytes',
+  mode: 'absolute',
+  limit: 250000,
+};
+const budgetStatus: BudgetEvaluation['status'] = 'error';
+export { evaluateBudgets, budgetFileSchema, budgetEvaluationSchema, budgetRule, budgetStatus };

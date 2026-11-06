@@ -18,14 +18,14 @@ Reference · [Documentation home](README.md)
 
 ## Scripts
 
-| Command                 | Behavior                                                                                                                                                                            |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm changeset`        | Adds a release description                                                                                                                                                          |
-| `pnpm version-packages` | Applies Changesets versioning; no publication                                                                                                                                       |
-| `pnpm test:release`     | Tests beta-only policy, receipt consistency and registry error handling                                                                                                             |
-| `pnpm release:check`    | Validates public/private boundaries and runs lint, types, core tests, release tests, formatting, installed consumers and real Pages fixture import; saves verified artifact/receipt |
-| `pnpm release:plan`     | Validates receipt and prints the planned npm command; no publication or credential access                                                                                           |
-| `pnpm release`          | Actual publication; requires GitHub Actions, clean checkout, matching commit/receipt and beta policy                                                                                |
+| Command                 | Behavior                                                                                                                                                                                                  |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm changeset`        | Adds a release description                                                                                                                                                                                |
+| `pnpm version-packages` | Applies Changesets versioning; no publication                                                                                                                                                             |
+| `pnpm test:release`     | Tests beta-only policy, receipt consistency and registry error handling                                                                                                                                   |
+| `pnpm release:check`    | Validates public/private boundaries and runs lint, types, core tests, release tests, formatting, installed consumers, report browser tests and real Pages fixture import; saves verified artifact/receipt |
+| `pnpm release:plan`     | Validates receipt and prints the planned npm command; no publication or credential access                                                                                                                 |
+| `pnpm release`          | Actual publication; requires GitHub Actions, clean checkout, matching commit/receipt and beta policy                                                                                                      |
 
 ## Artifact receipt
 
@@ -34,3 +34,5 @@ Reference · [Documentation home](README.md)
 The tarball allowlist contains `dist`, `README.md`, `LICENSE` and `CHANGELOG.md`; package metadata is included by the packer. Compiled `dist` includes declarations, worker code and prebuilt report assets. Fixtures, credentials, source tests, workspace dependencies and local history do not ship.
 
 A registry query skips publication only for an identical published integrity. Explicit 404 permits a first publish attempt; all other lookup failures stop publication. No `latest` promotion or stable-version publishing is implemented. First-package registry tag behavior must be inspected after the first authorized publish, as described in [the release guide](releases.md).
+
+Release verification requires `pnpm test:report` after fresh consumer installation. The workflow installs Playwright Chromium first. Missing or failing browser execution stops verification and no receipt is created. Local Chrome launch restrictions are an outstanding validation gap, not a passing check.

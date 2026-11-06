@@ -28,3 +28,6 @@ export { compareRuns } from './comparison.js';
 export { exportComparisonReport } from './report.js';
 export { reportDocumentSchema } from './report-data.js';
 export type { ReportDocument, ReportRow } from './report-data.js';
+export { evaluateBudgets } from './budgets.js';
+export { budgetFileSchema, budgetEvaluationSchema } from './budget-data.js';
+export type { BudgetRule, BudgetEvaluation } from './budget-data.js';

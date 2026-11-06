@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile, mkdir, copyFile, writeFile, readdir } from 'node:fs/promises';
+import { readFile, mkdir, copyFile, writeFile, readdir, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { resolve, join } from 'node:path';
@@ -25,6 +25,8 @@ for (const parent of ['packages', 'fixtures']) {
     if (pkg.name !== 'britepulse') assert.equal(pkg.private, true, `${pkg.name} must stay private`);
   }
 }
+// An unsuccessful verification must not leave a previous receipt looking current.
+await rm(join(root, '.artifacts/release/receipt.json'), { force: true });
 const checks = [
   'lint',
   'typecheck',
@@ -32,6 +34,7 @@ const checks = [
   'test:release',
   'format:check',
   'test:integration',
+  'test:report',
   'test:next-pages',
 ];
 for (const check of checks) await run('pnpm', ['run', check], { cwd: root, timeout: 600_000 });

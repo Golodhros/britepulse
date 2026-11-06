@@ -101,6 +101,47 @@ test('installed Vite integration and CLI preserve a real baseline/candidate hist
     assert.equal(comparison.compatible, true);
     const key = JSON.stringify(['bundle', 'All exported assets', 'JS emittedBytes']);
     assert(comparison.metrics[key].absolute > 50_000);
+    const budgetPath = join(directory, 'budgets.json');
+    const rule = {
+      group: 'bundle',
+      subject: 'All exported assets',
+      metric: 'JS emittedBytes',
+      unit: 'bytes',
+      limit: 0,
+    };
+    for (const [override, expected, status] of [
+      [{}, 1, 'fail'],
+      [{ limit: 1_000_000_000 }, 0, 'pass'],
+      [{ unit: 'ms' }, 2, 'error'],
+      [{ mode: 'regression-percent' }, 1, 'fail'],
+    ]) {
+      await writeFile(
+        budgetPath,
+        JSON.stringify({ schemaVersion: 1, budgets: [{ ...rule, ...override }] }),
+      );
+      const checked = cli('vite-react', [
+        'budget',
+        '--comparison',
+        comparison.id,
+        '--budgets',
+        budgetPath,
+        '--json',
+      ]);
+      assert.equal(checked.status, expected, checked.stderr);
+      assert.equal(JSON.parse(checked.stdout).status, status);
+    }
+    const evaluationArgs = [
+      'budget',
+      '--comparison',
+      comparison.id,
+      '--budgets',
+      budgetPath,
+      '--output',
+      'budget-result.json',
+    ];
+    assert.equal(cli('vite-react', evaluationArgs).status, 1);
+    assert.equal((await readJSON(join(directory, 'budget-result.json'))).status, 'fail');
+    assert.equal(cli('vite-react', evaluationArgs).status, 2);
     const exported = json(
       cli('vite-react', [
         'report',
@@ -108,6 +149,8 @@ test('installed Vite integration and CLI preserve a real baseline/candidate hist
         comparison.id,
         '--output',
         'comparison-report.html',
+        '--budgets',
+        budgetPath,
       ]),
     );
     const html = await readFile(exported.path, 'utf8');
@@ -116,6 +159,7 @@ test('installed Vite integration and CLI preserve a real baseline/candidate hist
         /<script id="britepulse-report-data" type="application\/json">(.*?)<\/script>/s,
       )[1],
     );
+    assert.equal(embedded.budgets.status, 'fail');
     assert.equal(embedded.comparison.id, comparison.id);
     assert.equal(embedded.comparison.metrics[key].absolute, comparison.metrics[key].absolute);
     assert(embedded.rows.length > 0);

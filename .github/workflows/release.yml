@@ -56,6 +56,8 @@ jobs:
           EXPECTED_VERSION: ${{ inputs.version }}
         run: node -e "const p=require('./packages/britepulse/package.json');if(p.version!==process.env.EXPECTED_VERSION)throw Error('Requested version differs from checkout')"
       - run: pnpm install --frozen-lockfile
+      - name: Install report browser
+        run: pnpm --filter @britepulse/integration exec playwright install --with-deps chromium
       - run: pnpm release:check
       - name: Save verified artifact
         uses: actions/upload-artifact@v4

@@ -50,7 +50,12 @@ export async function bundleRun(store, bytes, options = {}) {
 export async function syntheticRun(
   store,
   value,
-  { samples = 3, status = 'complete', fingerprint = metadata.configFingerprint } = {},
+  {
+    samples = 3,
+    status = 'complete',
+    fingerprint = metadata.configFingerprint,
+    score = false,
+  } = {},
 ) {
   const session = await store.create({
     ...metadata,
@@ -68,11 +73,11 @@ export async function syntheticRun(
           status,
           diagnostics: status === 'partial' ? ['Missing samples'] : [],
           metrics: {
-            'largest-contentful-paint': {
-              unit: 'ms',
-              direction: 'lower',
+            [score ? 'performance-score' : 'largest-contentful-paint']: {
+              unit: score ? 'score' : 'ms',
+              direction: score ? 'higher' : 'lower',
               median: value,
-              medianAbsoluteDeviation: value === null ? null : 5,
+              medianAbsoluteDeviation: value === null ? null : 0,
               validSamples: value === null ? 0 : samples,
               attemptedSamples: 3,
             },

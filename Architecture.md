@@ -22,6 +22,8 @@ flowchart LR
   Next[Next.js Pages client Webpack build] --> NextImport[Manifest and stats importer]
   NextImport --> Collect
   Store --> Compare[Shared comparison and report data]
+  Compare --> Budgets[Pure CI budget evaluator]
+  Budgets --> Verdict[JSON verdict and optional report annotation]
   Compare --> Export[Standalone HTML export]
   Export --> UI[Prebuilt React dashboard]
   UI --> Charts[Shadcn and Britecharts]

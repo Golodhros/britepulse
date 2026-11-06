@@ -12,6 +12,7 @@ Usage: britepulse [command]
   measure         Experimental cold-cache Lighthouse collection (requires --experimental)
   compare         Compare two stored run IDs
   report          Export a saved comparison as a standalone HTML report
+  budget          Evaluate CI limits for a saved comparison
   doctor          Validate the project and resolved measurement profile
   history         List local runs
   (no command)    Open the interactive menu

@@ -20,7 +20,7 @@ Completeness and capabilities answer different questions. A snapshot can contain
 
 A median summarizes values across successful measured attempts. Warmups and failed attempts do not supply values. Each metric has its own valid count, because one report can contain LCP while another does not. Median absolute deviation records spread without claiming statistical significance.
 
-Retrying a successful low score would bias the sample set. Retries therefore replace failed measured attempts only. Aggregation can preserve partial medians for inspection; complete one- or two-sample results still cannot satisfy the planned minimum-three-sample budget policy. Budget evaluation is not yet implemented.
+Retrying a successful low score would bias the sample set. Retries therefore replace failed measured attempts only. Aggregation can preserve partial medians for inspection; complete one- or two-sample results still cannot satisfy the minimum-three-sample budget policy. The evaluator rejects incomplete or insufficient samples.
 
 ## Asset sizes describe a build, not a browser session
 
@@ -30,4 +30,4 @@ Synthetic navigation metrics describe a controlled browser navigation, not real-
 
 ## Presentation is a separate stage
 
-Stored measurements feed shared comparison calculations and a validated report model. The exported HTML dashboard presents that model with exact values, counts and diagnostics; it does not invent history or sample trends. Missing/incompatible data hides numerical claims. Browser interaction requires its own validation, and budget evaluation remains a separate step.
+Stored measurements feed shared comparison calculations and a validated report model. The exported HTML dashboard presents that model with exact values, counts and diagnostics; it does not invent history or sample trends. Missing/incompatible data hides numerical claims. Browser interaction requires its own validation, and explicit budget rules can be evaluated against the same model.

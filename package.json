@@ -25,6 +25,7 @@
     "release:check": "node scripts/release-check.mjs",
     "release:plan": "node scripts/release.mjs",
     "release": "node scripts/release.mjs --publish",
+    "test:report": "pnpm --filter @britepulse/integration run test:report",
     "test:release": "node --test scripts/tests/release-policy.test.mjs"
   },
   "devDependencies": {

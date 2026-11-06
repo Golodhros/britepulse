@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+import { writeExportFile } from './export-file.js';
 import { parseArgs } from 'node:util';
 import { resolve } from 'node:path';
 import { initializeProject, inspectProject, loadConfig } from './setup.js';
@@ -182,13 +184,14 @@ async function comparisonCommand(command: 'compare' | 'report', rest: string[]):
       candidate: { type: 'string' },
       comparison: { type: 'string' },
       output: { type: 'string' },
+      budgets: { type: 'string' },
     },
   });
   if (values.help) {
     console.log(
       command === 'compare'
         ? 'Usage: britepulse compare --baseline <run UUID> --candidate <run UUID> [--config <path>] [--json]'
-        : 'Usage: britepulse report --comparison <comparison UUID> --output <new HTML file> [--config <path>] [--json]',
+        : 'Usage: britepulse report --comparison <comparison UUID> --output <new HTML file> [--budgets <JSON file>] [--config <path>] [--json]',
     );
 
     return;
@@ -198,7 +201,7 @@ async function comparisonCommand(command: 'compare' | 'report', rest: string[]):
   if (command === 'compare') {
     if (!values.baseline || !values.candidate)
       throw new Error('compare requires --baseline and --candidate run IDs');
-    if (values.comparison || values.output)
+    if (values.comparison || values.output || values.budgets)
       throw new Error('compare does not accept report options');
     const { compareRuns } = await import('./comparison.js');
     print(await compareRuns(store, values.baseline, values.candidate));
@@ -208,8 +211,52 @@ async function comparisonCommand(command: 'compare' | 'report', rest: string[]):
     if (values.baseline || values.candidate)
       throw new Error('report accepts a saved comparison ID');
     const { exportComparisonReport } = await import('./report.js');
-    print({ path: await exportComparisonReport(store, values.comparison, values.output) });
+    print({
+      path: await exportComparisonReport(
+        store,
+        values.comparison,
+        values.output,
+        values.budgets ? JSON.parse(await readFile(resolve(values.budgets), 'utf8')) : undefined,
+      ),
+    });
   }
+}
+
+async function budget(rest: string[]): Promise<void> {
+  const { values } = parseArgs({
+    args: rest,
+    options: {
+      ...shared,
+      comparison: { type: 'string' },
+      budgets: { type: 'string' },
+      output: { type: 'string' },
+    },
+  });
+  if (values.help) {
+    console.log(
+      'Usage: britepulse budget --comparison <UUID> --budgets <JSON file> [--output <new JSON file>] [--config <path>] [--json]',
+    );
+
+    return;
+  }
+  if (!values.comparison || !values.budgets)
+    throw new Error('budget requires --comparison and --budgets');
+  const config = await loadConfig(values.config);
+  const store = new RunStore(config.outputDir);
+  const { evaluateBudgets } = await import('./budgets.js');
+  const evaluation = evaluateBudgets(
+    await store.readComparisonReport(values.comparison),
+    JSON.parse(await readFile(resolve(values.budgets), 'utf8')),
+  );
+  if (values.output)
+    await writeExportFile(
+      store.directory,
+      values.output,
+      JSON.stringify(evaluation, null, 2) + '\n',
+    );
+  print(evaluation);
+  if (evaluation.status === 'fail') process.exitCode = 1;
+  if (evaluation.status === 'error') process.exitCode = 2;
 }
 
 export async function execute(args: string[]): Promise<void> {
@@ -217,6 +264,8 @@ export async function execute(args: string[]): Promise<void> {
   switch (command) {
     case 'init':
       return initialize(rest);
+    case 'budget':
+      return budget(rest);
     case 'compare':
     case 'report':
       return comparisonCommand(command, rest);

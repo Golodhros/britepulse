@@ -79,6 +79,29 @@ function MetricCards({ metric, label }: { metric: MetricDelta; label: string }) 
   );
 }
 
+function BudgetResults({ report }: { report: ReportDocument }) {
+  if (!report.budgets) return null;
+
+  return (
+    <section aria-label="CI budgets" className="space-y-3 rounded-lg border p-4">
+      <h2 className="text-xl font-semibold">CI budgets: {report.budgets.status}</h2>
+      {report.budgets.results.map(({ rule, result }) => (
+        <div key={`${result.metric}:${rule.mode}`} className="break-words text-sm">
+          <p>
+            {rule.subject} · {rule.metric} · {rule.mode}: <strong>{result.status}</strong>
+          </p>
+          <p>
+            Observed {value(result.observed, result.unit)} · limit{' '}
+            {value(result.limit, result.unit)} ·{' '}
+            {result.direction === 'lower' ? 'maximum' : 'minimum'}
+          </p>
+          {result.reason && <p>{result.reason}</p>}
+        </div>
+      ))}
+    </section>
+  );
+}
+
 function ComparisonView({ report }: { report: ReportDocument }) {
   const subjects = [...new Set(report.rows.map((row) => row.subject))];
   const [subject, setSubject] = useState(subjects[0] ?? '');
@@ -116,10 +139,10 @@ function ComparisonView({ report }: { report: ReportDocument }) {
       {(partial || smallSample) && (
         <p role="note" className="rounded-lg border border-dashed p-4 text-sm">
           Inspect these measurements with their sample counts and diagnostics. Partial data or fewer
-          than three valid samples cannot establish a passing budget. Budget evaluation is not
-          implemented.
+          than three valid samples cannot establish a passing budget.
         </p>
       )}
+      <BudgetResults report={report} />
       <section className="grid gap-5 sm:grid-cols-2" aria-label="Run identities">
         {[
           ['Baseline', report.baseline],
@@ -325,7 +348,8 @@ export default function App() {
         </Card>
       )}
       <footer className="text-sm text-muted-foreground">
-        BritePulse · Local measurements · No statistical significance or budget verdict is implied.
+        BritePulse · Local measurements · Budget verdicts apply only to the displayed rules; no
+        statistical significance is implied.
       </footer>
     </main>
   );
