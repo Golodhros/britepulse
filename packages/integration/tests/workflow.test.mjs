@@ -113,6 +113,8 @@ test('installed Vite integration and CLI preserve a real baseline/candidate hist
       [{}, 1, 'fail'],
       [{ limit: 1_000_000_000 }, 0, 'pass'],
       [{ unit: 'ms' }, 2, 'error'],
+      [{ mode: 'regression-percent', minimumChange: 1_000_000_000 }, 0, 'pass'],
+      [{ mode: 'regression-absolute', limit: 50_000 }, 1, 'fail'],
       [{ mode: 'regression-percent' }, 1, 'fail'],
     ]) {
       await writeFile(

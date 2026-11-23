@@ -8,12 +8,22 @@ export const budgetRuleSchema = z
     subject: nonempty,
     metric: nonempty,
     unit: unitSchema,
-    mode: z.enum(['absolute', 'regression-percent']).default('absolute'),
+    mode: z.enum(['absolute', 'regression-percent', 'regression-absolute']).default('absolute'),
     limit: z.number().finite().nonnegative(),
+    /** Source-unit noise floor: a percentage violation within this absolute regression passes. */
+    minimumChange: z.number().finite().nonnegative().optional(),
   })
   .refine(
-    (rule) => rule.mode !== 'absolute' || rule.unit !== 'score' || rule.limit <= 1,
-    'Absolute score limits use the fractional 0–1 scale',
+    (rule) => rule.mode === 'regression-percent' || rule.unit !== 'score' || rule.limit <= 1,
+    'Score limits outside percentage rules use the fractional 0–1 scale',
+  )
+  .refine(
+    (rule) => rule.minimumChange === undefined || rule.mode === 'regression-percent',
+    'minimumChange applies only to regression-percent rules',
+  )
+  .refine(
+    (rule) => rule.unit !== 'score' || (rule.minimumChange ?? 0) <= 1,
+    'Score minimumChange uses the fractional 0–1 scale',
   );
 export const budgetFileSchema = z
   .strictObject({ schemaVersion, budgets: z.array(budgetRuleSchema).min(1) })

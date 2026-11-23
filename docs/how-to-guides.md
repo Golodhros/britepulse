@@ -179,3 +179,46 @@ britepulse budget --comparison "$COMPARISON_ID" --budgets budgets.json --output 
 ```
 
 Use fresh output paths per job. Upload the HTML and JSON as CI artifacts, including on failure. Preserve exit codes 1 (violation) and 2 (measurement/configuration error); either should fail the job. Source artifact collection remains your build pipeline's responsibility.
+
+### Example: Vite pull-request job on GitHub Actions
+
+This job builds the pull request's base and head with the `britepulse/vite` plugin already configured, imports both artifacts into the head checkout's history and gates the comparison. It assumes `britepulse.config.json` uses `"bundle": { "adapter": "vite" }`, pnpm, and a committed `budgets.json`. Both imports use the head configuration, so their profiles stay comparable. Adjust the build command and output directory to match your application.
+
+```yaml
+name: Bundle budget
+on: pull_request
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: head }
+      - uses: actions/checkout@v4
+        with: { path: base, ref: '${{ github.event.pull_request.base.sha }}' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22.19.0' }
+      - uses: pnpm/action-setup@v4
+      - name: Build base and head
+        run: |
+          for dir in base head; do
+            (cd "$dir" && pnpm install --frozen-lockfile && pnpm build)
+          done
+      - name: Compare and gate
+        working-directory: head
+        run: |
+          BASELINE_ID=$(pnpm exec britepulse analyze --artifact ../base/dist/britepulse-bundle.json --label base --json | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).id")
+          CANDIDATE_ID=$(pnpm exec britepulse analyze --artifact dist/britepulse-bundle.json --label head --json | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).id")
+          COMPARISON_ID=$(pnpm exec britepulse compare --baseline "$BASELINE_ID" --candidate "$CANDIDATE_ID" --json | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).id")
+          mkdir -p ci-output
+          pnpm exec britepulse report --comparison "$COMPARISON_ID" --budgets budgets.json --output ci-output/comparison.html
+          pnpm exec britepulse budget --comparison "$COMPARISON_ID" --budgets budgets.json --output ci-output/budget-result.json --json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: britepulse, path: head/ci-output/ }
+```
+
+The base checkout must already contain the plugin; otherwise its artifact is missing and the job fails before comparison. `pnpm/action-setup` reads the pinned pnpm version from `packageManager`. A budget violation exits 1 and fails the step; the report is still uploaded.
+
+### Next.js Pages Router jobs
+
+Use the same structure with the stats-enabled `pnpm exec next build --webpack` from the recipe above and `britepulse analyze --next-build .next` (and `../base/.next` for the baseline), and keep the report export and upload steps. Do not add a `budget` step yet: Next.js Pages imports are always partial because asynchronous route attribution is unavailable, so every budget rule returns an error (exit 2). The exported report remains useful for review.

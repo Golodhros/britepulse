@@ -275,3 +275,17 @@ Quality review and fixes:
 - Made report browser tests mandatory in release receipts, installed Chromium in the manual publish workflow and invalidated earlier receipts before verification. Policy tests reject a receipt missing this check. Updated the unpublished beta descriptions and Diátaxis reference/how-to docs.
 
 Validation: lint, types, formatting, 92 core/fixture cases, three release-policy cases, 17 fresh-tarball consumer checks and production packaging pass. The real Next Pages pair still verifies +70017 emitted JS bytes. Local report tests fail before rendering because Chrome cannot launch; release verification therefore stops without a receipt. CI must establish browser rendering/interaction before publication. No publication or portfolio testing was performed.
+
+## Iteration 20 Absolute regression budgets and CI job examples
+
+Closed the remaining work package 10 budget gap: regression limits now support both percentages and absolute floors. Added `regression-absolute` rules, which allow a source-unit regression and evaluate zero baselines, and an optional `minimumChange` noise floor on `regression-percent` rules. A percentage violation within the floor passes with an explanatory reason. Added a Vite pull-request GitHub Actions example and Next.js Pages guidance to the CI how-to.
+
+Quality review and fixes:
+
+- Kept the change inside the pure evaluator and browser-safe budget schema; split per-mode judgement into a helper to stay within the SonarJS complexity limit. No runtime dependencies, CLI flags or persisted comparison schemas changed; existing budget files and evaluations remain valid.
+- Reused direction-aware clamping for both regression modes so higher-is-better scores reverse and improvements report zero. Score limits and floors stay on the fractional scale. `minimumChange` is rejected on other modes and cannot rescue a zero-baseline percentage rule.
+- Added the unit to the floor-pass reason after review found a bare number. Ordered the installed CLI cases so the following export assertions still use a failing rule.
+- Did not add a Next.js budget step to the examples: Pages imports are always partial, so every rule returns exit 2. The guidance says so and uses the stats-enabled `next build --webpack` command. The GitHub Actions YAML is documentation and was not executed in Actions; the installed workflow test exercises the same command sequence locally.
+- Updated the unpublished beta changeset, changelog and release notes.
+
+Validation: lint, strict typechecks, formatting, 95 core/fixture cases and all 17 fresh-tarball consumer checks pass, including installed `regression-absolute` and floor cases and strict declarations for both rule shapes. Report browser checks were not rerun because Chrome cannot launch locally; the report UI is unchanged. Remaining release blockers are unchanged: CI browser rendering and live Lighthouse evidence.

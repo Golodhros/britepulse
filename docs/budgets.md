@@ -30,11 +30,15 @@ Exit codes: **0** all rules pass; **1** at least one violation; **2** any measur
 }
 ```
 
-Selectors match the report row's group, subject and label exactly. Use the saved `report.json` to discover selectors. Bundle selectors include `All exported assets` and entrypoint subjects; synthetic subjects are collected URLs. Units must match the measurement. A file must contain at least one rule; duplicate selectors with the same mode are rejected.
+Selectors match the report row's group, subject and label exactly. Use the saved `report.json` to discover selectors. Bundle selectors include `All exported assets` and entrypoint subjects; synthetic subjects are collected URLs. Units must match the measurement. A file must contain at least one rule; duplicate selectors with the same mode are rejected. Use separate rules to combine modes: every rule must pass.
 
 `mode` defaults to `absolute`. Absolute rules compare the candidate to an inclusive maximum for lower-is-better metrics, or an inclusive minimum for higher-is-better metrics. Performance scores use the fractional 0–1 scale. Limits are finite and nonnegative.
 
+`regression-absolute` uses the unrounded change in the source unit, reversed for higher-is-better metrics and clamped so improvements report zero. The limit is the allowed regression in that unit, for example `10240` bytes or `0.05` score. Score limits use the fractional 0–1 scale. A zero baseline can be evaluated.
+
 `regression-percent` uses the unrounded percentage change from baseline, reverses it for higher-is-better metrics, and clamps improvements to zero. The limit is the allowed regression percentage, so `5` means 5%, including score rules. Its result uses `unitless`; the rule still identifies the source unit. A zero baseline produces an error for percentage rules; absolute rules can still evaluate it.
+
+Percentage rules accept an optional `minimumChange` noise floor in the source unit. When the percentage limit is exceeded but the absolute regression is at most `minimumChange`, the rule passes and its `reason` explains why. For example, `{ "mode": "regression-percent", "limit": 5, "minimumChange": 2048 }` fails only when JS grows by more than 5% and more than 2048 bytes. `minimumChange` is rejected on other modes and does not rescue a zero baseline.
 
 Both runs must be complete and compatible. Missing measurements, missing selectors and mismatched units produce errors. Synthetic rules require at least three valid samples for that metric on each side. Partial Next.js imports therefore cannot pass budgets. Budgets are deterministic limits, not statistical significance tests.
 

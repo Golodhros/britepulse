@@ -88,5 +88,20 @@ const budgetRule: BudgetRule = {
   mode: 'absolute',
   limit: 250000,
 };
+const flooredRule: BudgetRule = {
+  ...budgetRule,
+  mode: 'regression-percent',
+  limit: 5,
+  minimumChange: 2048,
+};
+const deltaRule: BudgetRule = { ...budgetRule, mode: 'regression-absolute', limit: 10240 };
 const budgetStatus: BudgetEvaluation['status'] = 'error';
-export { evaluateBudgets, budgetFileSchema, budgetEvaluationSchema, budgetRule, budgetStatus };
+export {
+  evaluateBudgets,
+  budgetFileSchema,
+  budgetEvaluationSchema,
+  budgetRule,
+  flooredRule,
+  deltaRule,
+  budgetStatus,
+};

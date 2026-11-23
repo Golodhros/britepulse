@@ -72,6 +72,58 @@ test('improvements consume no regression allowance and zero baselines cannot pas
     assert.equal(evaluateBudgets(zero, file(percent)).status, 'error');
   }));
 
+test('absolute regression limits use source units, clamp improvements and accept zero baselines', async () =>
+  withTemporaryDirectory(async (directory) => {
+    const delta = { ...bundleRule, mode: 'regression-absolute', limit: 50 };
+    const grown = await reportFor(directory, 100, 150);
+    const result = evaluateBudgets(grown, file(delta)).results[0].result;
+    assert.deepEqual([result.status, result.observed, result.unit], ['pass', 50, 'bytes']);
+    assert.equal(evaluateBudgets(grown, file({ ...delta, limit: 49 })).status, 'fail');
+    const improved = await reportFor(join(directory, 'improved'), 150, 100);
+    assert.equal(
+      evaluateBudgets(improved, file({ ...delta, limit: 0 })).results[0].result.observed,
+      0,
+    );
+    const zero = await reportFor(join(directory, 'zero'), 0, 10);
+    assert.equal(evaluateBudgets(zero, file({ ...delta, limit: 10 })).status, 'pass');
+  }));
+
+test('higher-is-better absolute regressions reverse the score direction', async () =>
+  withTemporaryDirectory(async (directory) => {
+    const report = await reportFor(directory, 0.8, 0.6, {
+      synthetic: true,
+      baseline: { score: true },
+      candidate: { score: true },
+    });
+    const rule = {
+      group: 'synthetic',
+      subject: 'https://example.test/',
+      metric: 'performance-score',
+      unit: 'score',
+      mode: 'regression-absolute',
+      limit: 0.1,
+    };
+    const result = evaluateBudgets(report, file(rule)).results[0].result;
+    assert.equal(result.status, 'fail');
+    assert(Math.abs(result.observed - 0.2) < 1e-10);
+    assert.equal(evaluateBudgets(report, file({ ...rule, limit: 0.25 })).status, 'pass');
+  }));
+
+test('percentage regressions within minimumChange pass with an explanation', async () =>
+  withTemporaryDirectory(async (directory) => {
+    const report = await reportFor(directory, 100, 150);
+    const percent = { ...bundleRule, mode: 'regression-percent', limit: 10 };
+    assert.equal(evaluateBudgets(report, file(percent)).status, 'fail');
+    const floored = evaluateBudgets(report, file({ ...percent, minimumChange: 50 })).results[0]
+      .result;
+    assert.equal(floored.status, 'pass');
+    assert.equal(floored.observed, 50);
+    assert.match(floored.reason, /minimumChange/);
+    assert.equal(evaluateBudgets(report, file({ ...percent, minimumChange: 49 })).status, 'fail');
+    const zero = await reportFor(join(directory, 'zero'), 0, 10);
+    assert.equal(evaluateBudgets(zero, file({ ...percent, minimumChange: 100 })).status, 'error');
+  }));
+
 test('partial, incompatible, unknown, unmatched and wrong-unit measurements cannot pass', async () =>
   withTemporaryDirectory(async (directory) => {
     for (const [index, options, baseline] of [
@@ -117,12 +169,17 @@ test('synthetic budgets require three valid samples on each side', async () =>
     assert.match(result.results[0].result.reason, /three valid samples/);
   }));
 
-test('budget files reject empty, duplicate, negative and out-of-scale rules', () => {
+test('budget files reject empty, duplicate, negative, out-of-scale and misplaced floor rules', () => {
   for (const input of [
     file(),
     file(bundleRule, bundleRule),
     file({ ...bundleRule, limit: -1 }),
     file({ ...bundleRule, unit: 'score', limit: 2 }),
+    file({ ...bundleRule, unit: 'score', mode: 'regression-absolute', limit: 2 }),
+    file({ ...bundleRule, minimumChange: 1 }),
+    file({ ...bundleRule, mode: 'regression-absolute', minimumChange: 1 }),
+    file({ ...bundleRule, unit: 'score', mode: 'regression-percent', minimumChange: 2 }),
+    file({ ...bundleRule, mode: 'regression-percent', minimumChange: -1 }),
   ])
     assert.equal(budgetFileSchema.safeParse(input).success, false);
 });

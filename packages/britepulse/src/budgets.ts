@@ -37,6 +37,43 @@ function eligibility(
   return null;
 }
 
+type ComparisonMetric = ReportDocument['comparison']['metrics'][string];
+
+/** Regression in the metric's worsening direction; improvements clamp to zero. */
+function regression(change: number, metric: ComparisonMetric): number {
+  return Math.max(0, metric.direction === 'lower' ? change : -change);
+}
+
+function judge(
+  rule: BudgetRule,
+  metric: ComparisonMetric,
+): { observed: number; pass: boolean; reason: string | null } | { error: string } {
+  if (rule.mode === 'absolute') {
+    const observed = metric.candidate!;
+    const pass = metric.direction === 'lower' ? observed <= rule.limit : observed >= rule.limit;
+
+    return { observed, pass, reason: null };
+  }
+  if (rule.mode === 'regression-absolute') {
+    const observed = regression(metric.absolute!, metric);
+
+    return { observed, pass: observed <= rule.limit, reason: null };
+  }
+  if (metric.percent === null)
+    return { error: 'Percentage regression is unavailable for a zero or unknown baseline' };
+  const observed = regression(metric.percent, metric);
+  if (observed <= rule.limit) return { observed, pass: true, reason: null };
+  const floor = rule.minimumChange;
+  if (floor !== undefined && regression(metric.absolute!, metric) <= floor)
+    return {
+      observed,
+      pass: true,
+      reason: `Percentage limit exceeded, but the absolute regression is within minimumChange ${floor} ${rule.unit}`,
+    };
+
+  return { observed, pass: false, reason: null };
+}
+
 function evaluateRule(report: ReportDocument, rule: BudgetRule): BudgetResult {
   const row = report.rows.find(
     (item) =>
@@ -44,7 +81,7 @@ function evaluateRule(report: ReportDocument, rule: BudgetRule): BudgetResult {
   );
   const metric = row ? report.comparison.metrics[row.key]! : null;
   const percentMode = rule.mode === 'regression-percent';
-  const direction = percentMode ? 'lower' : (metric?.direction ?? 'lower');
+  const direction = rule.mode === 'absolute' ? (metric?.direction ?? 'lower') : 'lower';
   const base = {
     schemaVersion: 1 as const,
     metric: JSON.stringify([rule.group, rule.subject, rule.metric]),
@@ -54,23 +91,20 @@ function evaluateRule(report: ReportDocument, rule: BudgetRule): BudgetResult {
   };
   const reason = eligibility(report, rule, row);
   if (reason) return budgetResultSchema.parse({ ...base, observed: null, status: 'error', reason });
-  if (percentMode && metric!.percent === null)
+  const verdict = judge(rule, metric!);
+  if ('error' in verdict)
     return budgetResultSchema.parse({
       ...base,
       observed: null,
       status: 'error',
-      reason: 'Percentage regression is unavailable for a zero or unknown baseline',
+      reason: verdict.error,
     });
-  let observed = metric!.candidate!;
-  if (percentMode)
-    observed = Math.max(0, metric!.direction === 'lower' ? metric!.percent! : -metric!.percent!);
-  const pass = direction === 'lower' ? observed <= rule.limit : observed >= rule.limit;
 
   return budgetResultSchema.parse({
     ...base,
-    observed,
-    status: pass ? 'pass' : 'fail',
-    reason: pass ? null : 'Observed value violates the configured limit',
+    observed: verdict.observed,
+    status: verdict.pass ? 'pass' : 'fail',
+    reason: verdict.pass ? verdict.reason : 'Observed value violates the configured limit',
   });
 }
 
