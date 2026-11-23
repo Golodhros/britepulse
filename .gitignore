@@ -8,3 +8,11 @@ coverage/
 !.env.example
 *.log
 .DS_Store
+
+.britepulse/
+*.tsbuildinfo
+
+.artifacts/
+
+packages/britepulse/LICENSE
+packages/britepulse/README.md

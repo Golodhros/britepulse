@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "access": "public",
+  "baseBranch": "main",
+  "fixed": [],
+  "linked": [],
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "@britepulse/report",
+    "@britepulse/integration",
+    "@britepulse/fixture-next-app",
+    "@britepulse/fixture-next-pages",
+    "@britepulse/fixture-synthetic",
+    "@britepulse/fixture-vite-react"
+  ]
+}

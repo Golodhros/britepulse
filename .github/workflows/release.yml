@@ -1,0 +1,78 @@
+name: Release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact prepared beta version to publish
+        required: true
+        type: string
+concurrency:
+  group: release
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  version:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - run: pnpm install --frozen-lockfile
+      - uses: changesets/action/select-mode@v2
+        id: mode
+      - uses: changesets/action/version@v2
+        if: steps.mode.outputs.mode == 'version'
+        with:
+          script: pnpm version-packages
+          pr-title: 'chore: version packages (beta)'
+          commit-message: 'chore: version packages (beta)'
+  publish:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Check requested version
+        env:
+          EXPECTED_VERSION: ${{ inputs.version }}
+        run: node -e "const p=require('./packages/britepulse/package.json');if(p.version!==process.env.EXPECTED_VERSION)throw Error('Requested version differs from checkout')"
+      - run: pnpm install --frozen-lockfile
+      - name: Install report browser
+        run: pnpm --filter @britepulse/integration exec playwright install --with-deps chromium
+      - run: pnpm release:check
+      - name: Save verified artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: britepulse-beta
+          path: .artifacts/release/
+      - name: Configure bootstrap registry authentication
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: node -e "const fs=require('node:fs');if(!process.env.NPM_TOKEN)throw Error('Configure NPM_TOKEN for the initial npm publish');fs.writeFileSync(process.env.RUNNER_TEMP+'/britepulse.npmrc','//registry.npmjs.org/:_authToken='+process.env.NPM_TOKEN+'\n',{mode:0o600})"
+      - uses: changesets/action/publish@v2
+        with:
+          script: pnpm release
+        env:
+          NPM_CONFIG_USERCONFIG: ${{ runner.temp }}/britepulse.npmrc
+      - name: Remove temporary registry authentication
+        if: always()
+        run: rm -f "$RUNNER_TEMP/britepulse.npmrc"

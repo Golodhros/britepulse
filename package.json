@@ -1,0 +1,40 @@
+{
+  "name": "britepulse-workspace",
+  "private": true,
+  "packageManager": "pnpm@12.6.0",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @britepulse/report dev",
+    "build": "node scripts/build-package.mjs",
+    "typecheck": "pnpm -r typecheck",
+    "test": "node scripts/test.mjs",
+    "test:compatibility": "node scripts/compatibility.mjs",
+    "test:next-pages": "node scripts/probe-next-pages-import.mjs",
+    "test:native": "node scripts/probe-next-native.mjs",
+    "test:synthetic": "node fixtures/synthetic/probe.mjs",
+    "test:synthetic:collector": "node scripts/probe-synthetic-collector.mjs",
+    "test:package": "pnpm --filter @britepulse/integration run test:package",
+    "lint": "eslint .",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "test:integration": "pnpm --filter @britepulse/integration run test:integration",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release:check": "node scripts/release-check.mjs",
+    "release:plan": "node scripts/release.mjs",
+    "release": "node scripts/release.mjs --publish",
+    "test:report": "pnpm --filter @britepulse/integration run test:report",
+    "test:release": "node --test scripts/tests/release-policy.test.mjs"
+  },
+  "devDependencies": {
+    "eslint": "10.14.0",
+    "typescript-eslint": "8.72.1",
+    "@types/node": "26.6.5",
+    "eslint-plugin-sonarjs": "4.2.2",
+    "oxfmt": "0.76.0",
+    "@stylistic/eslint-plugin": "5.10.0",
+    "@changesets/cli": "3.0.3"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "britepulse-cli-consumer",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "britepulse": "0.0.0"
+  }
+}
